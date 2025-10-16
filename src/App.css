@@ -1,0 +1,27 @@
+@import url('https://fonts.cdnfonts.com/css/cormorant-garamond');
+@import url('https://fonts.cdnfonts.com/css/poppins');
+
+body {
+  background-color: #FFFFFF;
+  font-family: 'Poppins', sans-serif;                                      
+}
+
+.brandFont {
+  font-family: 'Cormorant Garamond', sans-serif;
+}
+
+.smallTitle {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 170%;
+  letter-spacing: 0%;
+}
+
+.bigTitle {
+  font-family: 'Cormorant Garamond', sans-serif;
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 100%;
+  letter-spacing: 0%;
+}
+
