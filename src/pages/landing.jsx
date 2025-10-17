@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import img1 from "../assets/images/Rectangle 11.png";
 import img2 from "../assets/images/Rectangle 12.png";
 import img3 from "../assets/images/Rectangle 13.png";
+import nextArrow from "../assets/logo and icons/arrow-right-circle.png";
 
 const LandingPage = () => {
     const features = [
@@ -98,6 +99,33 @@ const blogPosts = [
     title: "Where Learning Meets Creativity",
     label: "We encourage students to explore their talents in arts, sports, and technology, ensuring a well-rounded education.",
     poster: img3,
+  },
+];
+
+const testimonials = [
+  {
+    message: "My son has grown so much in confidence since joining the school.",
+    name: "Mrs. Adeola Balogun",
+    relationship: "Jss2 Parent",
+    poster: img1,
+  },
+  {
+    message: "A safe and welcoming environment for my teenagers.",
+    name: "Mr Emeka Nwosu",
+    relationship: "SS2 Parent",
+    poster: img1,
+  },
+   {
+    message: "Excellent facilities and strong academic standards. I always recommend the leadership academy.",
+    name: "Mrs. Faith Johnson",
+    relationship: "SS1 Parent",
+    poster: img1,
+  },
+  {
+    message: "The teachers truly care about the students’ success.",
+    name: "Ms. Chiamaka Ose",
+    relationship: "Jss3 Parent",
+    poster: img1,
   },
 ];
 
@@ -206,7 +234,7 @@ const blogPosts = [
           </div>
           <img src={whoWeAre} alt="" />
         </div>
-        {/* What we do AND next steps */}
+        {/* What we offer AND next steps */}
         <div>
           {/* What we have to offer */}
           <div className="bg-[#FAFAFA] py-20 px-4 md:px-[120px]">
@@ -308,7 +336,11 @@ const blogPosts = [
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
             {blogPosts.map((item, index) => (
               <div key={index} className="grid gap-4">
-                <img src={item.poster} alt={item.title} className="aspect-video w-full" />
+                <img
+                  src={item.poster}
+                  alt={item.title}
+                  className="aspect-video w-full"
+                />
                 <div>
                   <div className="font-semibold text-sm text-brandBlue">
                     {item.title}
@@ -317,19 +349,56 @@ const blogPosts = [
                     {item.label}
                   </p>
                   <Link to={"/"} className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-brandLightBlue">Read more</span> <img src={arrowIcon} alt="" className="size-5"/>
+                    <span className="text-sm font-semibold text-brandLightBlue">
+                      Read more
+                    </span>{" "}
+                    <img src={arrowIcon} alt="" className="size-5" />
                   </Link>
                 </div>
               </div>
             ))}
           </div>
           <div className="flex justify-center">
-              <Button
-                background={"border-2 border-brandLightBlue text-brandLightBlue"}
-                buttonText={"View All News"}
-                hasIcon
-                icon={arrowIcon}
-              />
+            <Button
+              background={"border-2 border-brandLightBlue text-brandLightBlue"}
+              buttonText={"View All News"}
+              hasIcon
+              icon={arrowIcon}
+            />
+          </div>
+        </div>
+        {/* Testimonials */}
+        <div className="bg-[#FAFAFA] py-20 px-4 md:px-[120px]">
+          <div className="">
+            <div className="">
+              <div className="smallTitle w-fit grid relative">
+                <span className="z-10 text-brandRed">Testimonials.</span>
+                <span className="h-[6px] bg-brandRed/15 w-full text-start items-start absolute bottom-1"></span>
+              </div>
+            </div>
+            <div className="brandFont text-4xl font-bold text-pretty mb-6 mt-2 text-brandBlue">
+              What Parents Say About Us.
+            </div>
+            <div className="mt-10 grid gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 items-start gap-15">
+                {testimonials.map((item, index) => (
+                  <div key={index} className="grid gap-4">
+                    <img src={item.poster} alt={item.name} className="size-12 rounded-full object-cover"/>
+                    <div className="text-sm text-brandLightBlack">
+                      {item.message}
+                    </div>
+                    <div className="brandFont font-bold">
+                      <div>{item.name}sjb</div>
+                      <div>{item.relationship}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-4">
+                <img src={nextArrow} alt="" className=" size-7 rotate-180 opacity-40"/>
+                <img src={nextArrow} alt="" className=" size-7"/>
+              </div>
+            </div>
           </div>
         </div>
       </div>
