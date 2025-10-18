@@ -17,11 +17,19 @@ import {
   TooltipTrigger,
 } from "./components/ui/tooltip"
 import WhoWeAre from "./pages/About us/whoWeAre";
+import Facilities from "./pages/About us/facilities";
+import Achievements from "./pages/About us/achievements";
+import Staff from "./pages/About us/staff";
+import SchoolPolicy from "./pages/About us/schoolPolicy";
+import Enrollment from "./pages/admissions/enrollments";
+import Admissions from "./pages/admissions/admissions";
+import Academics from "./pages/academics";
+import BlogList from "./pages/blog/blogLists";
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="bg-brandBlue px-4 md:px-[120px] py-5 flex justify-between items-center">
+      <div className="bg-brandBlue px-4 md:px-[120px] py-5 flex justify-between items-center sticky top-0 z-50">
         <img src={logo} alt="" className="h-9" />
         <div className="text-white text-sm hidden md:flex gap-10">
           <span>Home</span>
@@ -37,6 +45,14 @@ function App() {
       <Routes>
         <Route index element={<LandingPage />} />
         <Route path="/who-we-are" element={<WhoWeAre />} />
+        <Route path="/facilities" element={<Facilities />} />
+        <Route path="/achievements" element={<Achievements />} />
+        <Route path="/staff" element={<Staff />} />
+        <Route path="/school-policy" element={<SchoolPolicy />} />
+        <Route path="/enrollment" element={<Enrollment />} />
+        <Route path="/admissions" element={<Admissions />} />
+        <Route path="/academics" element={<Academics />} />
+        <Route path="/blog" element={<BlogList />} />
       </Routes>
 
       <div>
