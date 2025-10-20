@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Link, Route, Routes, useLocation } from "react-router-dom";
 import logo from "../src/assets/logo and icons/TLAO_LOGO.png";
 import LandingPage from "./pages/landing";
 import sendMessageBanner from "../src/assets/images/sendMessageBanner.png";
@@ -25,22 +25,116 @@ import Enrollment from "./pages/admissions/enrollments";
 import Admissions from "./pages/admissions/admissions";
 import Academics from "./pages/academics";
 import BlogList from "./pages/blog/blogLists";
+import BlogPost from "./pages/blog/blogPost";
+import Gallery from "./pages/gallery";
+import ContactUs from "./pages/contactUs";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "./components/ui/popover";
+import { ChevronDown } from "lucide-react";
+
+// Create a separate Navbar component to use useLocation
+function Navbar() {
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  // Check if current path matches or starts with the given path
+  const isActive = (path) => {
+    if (path === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(path);
+  };
+
+  // Check if any "About Us" route is active
+  const isAboutUsActive = ['/who-we-are', '/facilities', '/achievements', '/staff', '/school-policy'].some(
+    path => pathname.startsWith(path)
+  );
+
+  const navLinkClass = (path) => {
+    return isActive(path) 
+      ? "underline decoration-2 decoration-brandRed font-semibold" 
+      : "hover:text-brandRed transition-colors";
+  };
+
+  return (
+    <div className="bg-brandBlue px-4 md:px-[120px] py-5 flex justify-between items-center sticky top-0 z-50">
+      <img src={logo} alt="" className="h-9" />
+      <div className="text-white text-sm hidden md:flex gap-10">
+        <Link to={"/"} className={navLinkClass('/')}>
+          Home
+        </Link>
+        
+        <Popover>
+          <PopoverTrigger 
+            className={`flex items-center gap-2 cursor-pointer ${
+              isAboutUsActive 
+                ? "decoration-2 border-brandRed font-semibold" 
+                : "hover:text-brandRed transition-colors"
+            }`}
+          >
+            <span className={`${isAboutUsActive?"underline decoration-2 decoration-brandRed font-semibold":""}`}>About us</span> <ChevronDown className="size-4"/>
+          </PopoverTrigger>
+          <PopoverContent className={"grid text-sm gap-4 mt-4"}>
+            <Link 
+              to={"/who-we-are"}
+              className={isActive('/who-we-are') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+            >
+              Who we are
+            </Link>
+            <Link 
+              to={"/facilities"}
+              className={isActive('/facilities') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+            >
+              Our facilities
+            </Link>
+            <Link 
+              to={"/achievements"}
+              className={isActive('/achievements') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+            >
+              Our achievements
+            </Link>
+            <Link 
+              to={"/staff"}
+              className={isActive('/staff') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+            >
+              Our staff
+            </Link>
+            <Link 
+              to={"/school-policy"}
+              className={isActive('/school-policy') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+            >
+              School policy
+            </Link>
+          </PopoverContent>
+        </Popover>
+
+        <Link to={"/admissions"} className={navLinkClass('/admissions')}>
+          Admissions
+        </Link>
+        <Link to={"/academics"} className={navLinkClass('/academics')}>
+          Academics
+        </Link>
+        <Link to={"/blog"} className={navLinkClass('/blog')}>
+          News & Events
+        </Link>
+        <Link to={"/gallery"} className={navLinkClass('/gallery')}>
+          Gallery
+        </Link>
+        <Link to={"/contact"} className={navLinkClass('/contact')}>
+          Contact us
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="bg-brandBlue px-4 md:px-[120px] py-5 flex justify-between items-center sticky top-0 z-50">
-        <img src={logo} alt="" className="h-9" />
-        <div className="text-white text-sm hidden md:flex gap-10">
-          <span>Home</span>
-          <span>About us</span>
-          <span>Admissions</span>
-          <span>Academics</span>
-          <span>News & Events</span>
-          <span>Gallery</span>
-          <span>Contact us</span>
-        </div>
-      </div>
+      <Navbar />
 
       <Routes>
         <Route index element={<LandingPage />} />
@@ -53,6 +147,9 @@ function App() {
         <Route path="/admissions" element={<Admissions />} />
         <Route path="/academics" element={<Academics />} />
         <Route path="/blog" element={<BlogList />} />
+        <Route path="/blog/post" element={<BlogPost />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/contact" element={<ContactUs />} />
       </Routes>
 
       <div>
@@ -114,11 +211,11 @@ function App() {
               <div className="grid gap-4">
                 <div className="font-bold">About us</div>
                 <ul className="text-sm grid gap-2 text-brandLightBlack">
-                  <li>Whoa are we</li>
+                  <li>Who are we</li>
                   <li>Facilities</li>
                   <li>Achievements</li>
                   <li>Staff</li>
-                  <li>School policiy</li>
+                  <li>School policy</li>
                 </ul>
               </div>
               <div>
@@ -128,9 +225,10 @@ function App() {
                     <li className="grid gap-2">
                       <img src={message} alt="" className="size-5" />
                       <span className="grid">
-                        {/* <span className="truncate">theleadershipacademyowo@yahoo.com</span> */}
                         <Tooltip>
-                          <TooltipTrigger className="truncate cursor-pointer">theleadershipacademyowo@yahoo.com</TooltipTrigger>
+                          <TooltipTrigger className="truncate cursor-pointer">
+                            theleadershipacademyowo@yahoo.com
+                          </TooltipTrigger>
                           <TooltipContent className="bg-brandBlue text-white py-2 cursor-default">
                             <span>theleadershipacademyowo@yahoo.com</span>
                           </TooltipContent>
@@ -148,11 +246,13 @@ function App() {
           </div>
         </div>
         <div className="px-4 md:px-[120px] py-4 bg-brandBlue flex items-center gap-10 justify-center">
-          <div className="text-white text-xs">Copyright © The Leadership Academy, Owo. All rights reserved.</div>
+          <div className="text-white text-xs">
+            Copyright © The Leadership Academy, Owo. All rights reserved.
+          </div>
           <span className="text-2xl text-brandLightBlue">•</span>
           <div className="flex items-center gap-4">
-            <img src={facebook} alt="" className="size-5"/>
-            <img src={insta} alt="" className="size-5"/>
+            <img src={facebook} alt="" className="size-5" />
+            <img src={insta} alt="" className="size-5" />
           </div>
         </div>
       </div>

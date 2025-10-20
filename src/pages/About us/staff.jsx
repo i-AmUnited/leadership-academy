@@ -63,7 +63,7 @@ const Staff = () => {
                 Meet our dedicated staff
             </div>
             <div className="flex justify-center">
-                <div className="text-sm md:w-1/2 lg:w-1/3">Passionate individuals who are committed excellent education.</div>
+                <div className="text-sm md:w-1/2 lg:w-1/3 smallTitle text-brandLightBlack/70">Passionate individuals who are committed excellent education.</div>
             </div>
             </div>
             <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">

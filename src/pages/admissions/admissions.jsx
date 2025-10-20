@@ -50,15 +50,6 @@ const Admissions = () => {
                   </Label>
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
-                      {/* <Button
-                        variant="outline"
-                        size={"lg"}
-                        id="date"
-                        className="w-full py-2 justify-between font-normal"
-                      >
-                        {date ? date.toLocaleDateString() : "Date of birth"}
-                        <img src={calenderIcon} alt="" className="size-5" />
-                      </Button> */}
                       <div className="w-full py-2 flex justify-between items-center cursor-pointer font-normal h-12 rounded-md px-6 has-[>svg]:px-4 border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50" id="date">
                         {date ? date.toLocaleDateString() : "Date of birth"}
                         <img src={calenderIcon} alt="" className="size-5" />
