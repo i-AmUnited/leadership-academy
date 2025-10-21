@@ -303,13 +303,13 @@ const testimonials = [
                       >
                         <span className="flex items-center gap-2">
                           {item.buttonText}
-                          <img src={downloadIcon} alt="" className="size-6" />
+                          <img src={downloadIcon} alt="" className="size-5" />
                         </span>
                       </a>
                     ) : (
                       <Link
                         to={item.destination}
-                        className="bg-brandLightBlue/10 border-2 border-brandLightBlue text-brandLightBlue font-medium text-sm px-[22px] py-4 text-center"
+                        className="grid h-fit bg-brandLightBlue/10 border-2 border-brandLightBlue text-brandLightBlue font-medium text-sm px-[22px] py-4 text-center"
                       >
                         {item.buttonText}
                       </Link>

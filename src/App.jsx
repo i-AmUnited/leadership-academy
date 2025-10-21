@@ -1,6 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Link, Route, Routes, useLocation } from "react-router-dom";
-import logo from "../src/assets/logo and icons/TLAO_LOGO.png";
+import { BrowserRouter, Link, Route, Routes, } from "react-router-dom";
 import LandingPage from "./pages/landing";
 import sendMessageBanner from "../src/assets/images/sendMessageBanner.png";
 import Button from "./components/button";
@@ -28,108 +27,101 @@ import BlogList from "./pages/blog/blogLists";
 import BlogPost from "./pages/blog/blogPost";
 import Gallery from "./pages/gallery";
 import ContactUs from "./pages/contactUs";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./components/ui/popover";
-import { ChevronDown } from "lucide-react";
+import Navbar from "./components/navbar";
 
-// Create a separate Navbar component to use useLocation
-function Navbar() {
-  const location = useLocation();
-  const pathname = location.pathname;
 
-  // Check if current path matches or starts with the given path
-  const isActive = (path) => {
-    if (path === '/') {
-      return pathname === '/';
-    }
-    return pathname.startsWith(path);
-  };
+// function Navbar() {
+//   const location = useLocation();
+//   const pathname = location.pathname;
 
-  // Check if any "About Us" route is active
-  const isAboutUsActive = ['/who-we-are', '/facilities', '/achievements', '/staff', '/school-policy'].some(
-    path => pathname.startsWith(path)
-  );
+//   const isActive = (path) => {
+//     if (path === '/') {
+//       return pathname === '/';
+//     }
+//     return pathname.startsWith(path);
+//   };
 
-  const navLinkClass = (path) => {
-    return isActive(path) 
-      ? "underline decoration-2 decoration-brandRed font-semibold" 
-      : "hover:text-brandRed transition-colors";
-  };
+//   const isAboutUsActive = ['/who-we-are', '/facilities', '/achievements', '/staff', '/school-policy'].some(
+//     path => pathname.startsWith(path)
+//   );
 
-  return (
-    <div className="bg-brandBlue px-4 md:px-[120px] py-5 flex justify-between items-center sticky top-0 z-50">
-      <img src={logo} alt="" className="h-9" />
-      <div className="text-white text-sm hidden md:flex gap-10">
-        <Link to={"/"} className={navLinkClass('/')}>
-          Home
-        </Link>
+//   const navLinkClass = (path) => {
+//     return isActive(path) 
+//       ? "underline decoration-2 decoration-brandRed font-semibold" 
+//       : "hover:text-brandRed transition-colors";
+//   };
+
+//   return (
+//     <div className="bg-brandBlue px-4 md:px-[120px] py-5 flex justify-between items-center sticky top-0 z-50">
+//       <img src={logo} alt="" className="h-9" />
+//       <div className="text-white text-sm hidden md:flex gap-10">
+//         <Link to={"/"} className={navLinkClass('/')}>
+//           Home
+//         </Link>
         
-        <Popover>
-          <PopoverTrigger 
-            className={`flex items-center gap-2 cursor-pointer ${
-              isAboutUsActive 
-                ? "decoration-2 border-brandRed font-semibold" 
-                : "hover:text-brandRed transition-colors"
-            }`}
-          >
-            <span className={`${isAboutUsActive?"underline decoration-2 decoration-brandRed font-semibold":""}`}>About us</span> <ChevronDown className="size-4"/>
-          </PopoverTrigger>
-          <PopoverContent className={"grid text-sm gap-4 mt-4"}>
-            <Link 
-              to={"/who-we-are"}
-              className={isActive('/who-we-are') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
-            >
-              Who we are
-            </Link>
-            <Link 
-              to={"/facilities"}
-              className={isActive('/facilities') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
-            >
-              Our facilities
-            </Link>
-            <Link 
-              to={"/achievements"}
-              className={isActive('/achievements') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
-            >
-              Our achievements
-            </Link>
-            <Link 
-              to={"/staff"}
-              className={isActive('/staff') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
-            >
-              Our staff
-            </Link>
-            <Link 
-              to={"/school-policy"}
-              className={isActive('/school-policy') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
-            >
-              School policy
-            </Link>
-          </PopoverContent>
-        </Popover>
+//         <Popover>
+//           <PopoverTrigger 
+//             className={`flex items-center gap-2 cursor-pointer ${
+//               isAboutUsActive 
+//                 ? "decoration-2 border-brandRed font-semibold" 
+//                 : "hover:text-brandRed transition-colors"
+//             }`}
+//           >
+//             <span className={`${isAboutUsActive?"underline decoration-2 decoration-brandRed font-semibold":""}`}>About us</span> <ChevronDown className="size-4"/>
+//           </PopoverTrigger>
+//           <PopoverContent className={"grid text-sm gap-4 mt-4"}>
+//             <Link 
+//               to={"/who-we-are"}
+//               className={isActive('/who-we-are') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+//             >
+//               Who we are
+//             </Link>
+//             <Link 
+//               to={"/facilities"}
+//               className={isActive('/facilities') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+//             >
+//               Our facilities
+//             </Link>
+//             <Link 
+//               to={"/achievements"}
+//               className={isActive('/achievements') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+//             >
+//               Our achievements
+//             </Link>
+//             <Link 
+//               to={"/staff"}
+//               className={isActive('/staff') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+//             >
+//               Our staff
+//             </Link>
+//             <Link 
+//               to={"/school-policy"}
+//               className={isActive('/school-policy') ? "font-semibold underline decoration-2 decoration-brandRed" : "hover:text-brandRed transition-colors"}
+//             >
+//               School policy
+//             </Link>
+//           </PopoverContent>
+//         </Popover>
 
-        <Link to={"/admissions"} className={navLinkClass('/admissions')}>
-          Admissions
-        </Link>
-        <Link to={"/academics"} className={navLinkClass('/academics')}>
-          Academics
-        </Link>
-        <Link to={"/blog"} className={navLinkClass('/blog')}>
-          News & Events
-        </Link>
-        <Link to={"/gallery"} className={navLinkClass('/gallery')}>
-          Gallery
-        </Link>
-        <Link to={"/contact"} className={navLinkClass('/contact')}>
-          Contact us
-        </Link>
-      </div>
-    </div>
-  );
-}
+//         <Link to={"/admissions"} className={navLinkClass('/admissions')}>
+//           Admissions
+//         </Link>
+//         <Link to={"/academics"} className={navLinkClass('/academics')}>
+//           Academics
+//         </Link>
+//         <Link to={"/blog"} className={navLinkClass('/blog')}>
+//           News & Events
+//         </Link>
+//         <Link to={"/gallery"} className={navLinkClass('/gallery')}>
+//           Gallery
+//         </Link>
+//         <Link to={"/contact"} className={navLinkClass('/contact')}>
+//           Contact us
+//         </Link>
+//       </div>
+//     </div>
+//   );
+// }
 
 function App() {
   return (
@@ -222,11 +214,11 @@ function App() {
                 <div className="col-span-2 grid gap-4">
                   <div className="font-bold">Contact Information</div>
                   <ul className="text-sm grid gap-5 text-brandLightBlack">
-                    <li className="grid gap-2">
+                    <li className="flex lg:grid gap-2">
                       <img src={message} alt="" className="size-5" />
                       <span className="grid">
                         <Tooltip>
-                          <TooltipTrigger className="truncate cursor-pointer">
+                          <TooltipTrigger className="lg:truncate cursor-pointer">
                             theleadershipacademyowo@yahoo.com
                           </TooltipTrigger>
                           <TooltipContent className="bg-brandBlue text-white py-2 cursor-default">
@@ -235,7 +227,7 @@ function App() {
                         </Tooltip>
                       </span>
                     </li>
-                    <li className="grid gap-2">
+                    <li className="flex lg:grid gap-2">
                       <img src={phone} alt="" className="size-5" />
                       <span>08167589732</span>
                     </li>
