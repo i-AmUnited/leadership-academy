@@ -28,6 +28,8 @@ import BlogPost from "./pages/blog/blogPost";
 import Gallery from "./pages/gallery";
 import ContactUs from "./pages/contactUs";
 import Navbar from "./components/navbar";
+import Admin from "./admin_portal/admin_structure";
+import { Toaster } from "react-hot-toast";
 
 
 // function Navbar() {
@@ -125,6 +127,13 @@ import Navbar from "./components/navbar";
 
 function App() {
   return (
+    <>
+    <Toaster
+  toastOptions={{
+    className: "toastBody flex items-center text-xs",
+  }}
+/>
+
     <BrowserRouter>
       <Navbar />
 
@@ -142,6 +151,8 @@ function App() {
         <Route path="/blog/post" element={<BlogPost />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/manage-tlao/*" element={<Admin />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
 
       <div>
@@ -249,6 +260,7 @@ function App() {
         </div>
       </div>
     </BrowserRouter>
+    </>
   );
 }
 

@@ -1,22 +1,24 @@
+import { useAchievements } from "../../lib/reuseableEffects";
 import achievementIcon from "../../assets/logo and icons/achievement.png"
 const Achievements = () => {
-    const achievements = [
-          {
-            year: "2024",
-            achievement: "1st position Spelling Bee – Ondo State Education Awards",
-            icon: achievementIcon,
-          },
-          {
-            year: "2024",
-            achievement: "8th position in the Nation Spelling Bee",
-            icon: achievementIcon,
-          },
-          {
-            year: "2024",
-            achievement: "3rd best mathematics – Ondo State Education Awards",
-            icon: achievementIcon,
-          },
-    ]
+    // const achievements = [
+    //       {
+    //         year: "2024",
+    //         achievement: "1st position Spelling Bee – Ondo State Education Awards",
+    //         icon: achievementIcon,
+    //       },
+    //       {
+    //         year: "2024",
+    //         achievement: "8th position in the Nation Spelling Bee",
+    //         icon: achievementIcon,
+    //       },
+    //       {
+    //         year: "2024",
+    //         achievement: "3rd best mathematics – Ondo State Education Awards",
+    //         icon: achievementIcon,
+    //       },
+    // ]
+    const achievements = useAchievements();
     return ( 
         <div className="px-4 md:px-[120px] lg:px-[231px] py-20 grid gap-10 bg-[#fafafa]">
             <div className="text-center">
@@ -34,12 +36,12 @@ const Achievements = () => {
             {achievements.map((item, index) => (
               <div key={index} className="bg-white p-6 border-b-2 border-brandRed">
                 <img
-                  src={item.icon}
+                  src={achievementIcon}
                   alt={item.year}
                   className="size-[100px] flex justify-center mx-auto"
                 />
                 <div className="grid gap-4 text-sm mt-4 text-center">
-                 <span className="font-bold">{item.achievement}</span>
+                 <span className="font-bold">{item.title}</span>
                  <span className="leading-6 text-brandLightBlack/60">{item.year}</span>
                 </div>
               </div>
