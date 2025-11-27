@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Spinner from "./Spinners/inlineSpinner";
 
-const Button = ({buttonText, background, textColor, loading, role}) => {
+const Button = ({buttonText, background, textColor, loading, role, destination}) => {
     return ( 
         <div className="w-fit">
             {role === "submit" ?
@@ -18,7 +18,7 @@ const Button = ({buttonText, background, textColor, loading, role}) => {
               }
             </button>
             :
-            <Link to={"/"} className={`${background} ${textColor} font-medium text-sm px-[22px] py-4 flex items-center gap-[10px]`}>
+            <Link to={destination} className={`${background} ${textColor} font-medium text-sm px-[22px] py-4 flex items-center gap-[10px]`}>
             {buttonText}
             </Link> 
             }

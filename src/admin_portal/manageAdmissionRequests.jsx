@@ -1,4 +1,4 @@
-import { useAdmissionRequestList, useSingleAdmissionDetail } from "../lib/reuseableEffects";
+import { useAdmissionRequestList } from "../lib/reuseableEffects";
 import Spinner from "../components/Spinners/spinner";
 import GoBack from "../components/back";
 import { useSelector } from "react-redux";

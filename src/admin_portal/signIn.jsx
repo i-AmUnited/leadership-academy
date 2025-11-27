@@ -41,6 +41,7 @@ const SignIn = () => {
               buttonText={"Sign in"}
               background={"bg-brandLightBlue"}
               textColor={"text-white"}
+              destination={"/manage-tlao/dashboard"}
             />
           </CardFooter>
         </Card>

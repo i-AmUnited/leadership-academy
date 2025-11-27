@@ -82,4 +82,22 @@ export class apiEndPoints {
     }
   }
 
+  static async listContactUsRequest(data) {
+    try {
+      return formDataApiClient.get("/get_contact_us_request", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async createContactUsRequest(data) {
+    try {
+      return formDataApiClient.post("/create_contact_us_request", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
 }

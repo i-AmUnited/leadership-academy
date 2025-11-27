@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { Achievements, AdmissionRequestList, SingleAdmissionDetails } from '../hooks/local/reducer';
+import { Achievements, AdmissionRequestList, ContactUsRequestList, SingleAdmissionDetails } from '../hooks/local/reducer';
 
 
 export function useAchievements() {
@@ -58,4 +58,24 @@ export function useSingleAdmissionDetail(admissionID) {
   }, [dispatch]);
 
   return { singleAdmission };
+}
+
+export function useContactUsRequestList() {
+  const [listContactRequests, setListContactRequests] = useState([])
+  const dispatch = useDispatch();
+  
+  const fetchContactRequests = async() => {
+    try {
+        const {payload} = await dispatch(ContactUsRequestList());
+        setListContactRequests(payload.result);
+        // console.log(payload.result);
+    }
+    catch(e){}
+  }
+  
+  useEffect(() => {
+    fetchContactRequests();
+  }, [dispatch]);
+
+  return { requests: listContactRequests, refetch: fetchContactRequests };
 }

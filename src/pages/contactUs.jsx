@@ -3,10 +3,48 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import Button from "../components/button";
+import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { CreateContactUsRequest } from "../hooks/local/reducer";
+import { showSuccessToast } from "../hooks/constants";
+import Spinner from "../components/Spinners/spinner";
 
 const ContactUs = () => {
+  const loading = useSelector((state) => state.user.loading);
+  const dispatch = useDispatch();
+  const contactUsForm = useFormik({
+    initialValues: {
+      firstname: "",
+      lastname: "",
+      phonenumber: "",
+      email: "",
+      subject: "",
+      message: "",
+    },
+    validationSchema: Yup.object({
+      fistname: Yup.string().required("Please provide your firstname"),
+      lastname: Yup.string().required("Please provide your lastname"),
+      phonenumber: Yup.string().required("Please provide your phone number"),
+      email: Yup.string().email("Please provide a valid email").required("Please provide your email"),
+      subject: Yup.string().required("Please provide a subject for your message"),
+      message: Yup.string().required("Please type in your message"),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      const { firstname, lastname, phonenumber, email, subject, message } = values;
+      let contactUsData = { firstname, lastname, phonenumber, email, subject, message };
+      const { payload } = await dispatch(
+        CreateContactUsRequest(contactUsData)
+      );
+      if (payload.status_code === "0") {
+        showSuccessToast("Message sent!");
+        resetForm();
+      }
+    },
+  });
     return (
       <div className="py-20 grid gap-10">
+        <Spinner loading={useSelector((state) => state.user).loading} />
         <div className="text-center px-4 md:px-[120px] lg:px-[231px]">
           <div className="brandFont text-4xl font-bold text-pretty mb-6 mt-2 text-brandBlue">
             Contact us
@@ -19,7 +57,7 @@ const ContactUs = () => {
           </div>
         </div>
         <div className="px-4 md:px-[120px] lg:px-[231px] grid grid-cols-1 lg:grid-cols-3">
-          <div className="lg:col-span-2 pe-25">
+          <form onSubmit={contactUsForm.handleSubmit} className="lg:col-span-2 pe-25">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="grid w-full items-center gap-2">
                   <Label htmlFor="firstName">First name</Label>
@@ -55,11 +93,13 @@ const ContactUs = () => {
                 </div>
             </div>
             <Button
+              role={"submit"}
               textColor={"text-white"}
               background={"bg-brandLightBlue"}
               buttonText={"Send message"}
+              loading={loading}
             />
-          </div>
+          </form>
           <div className="lg:col-span-1">
             <img src={banner} alt="" />
           </div>

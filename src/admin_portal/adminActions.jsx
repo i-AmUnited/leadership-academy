@@ -20,6 +20,13 @@ const AdminActions = () => {
                     </div>
                     <ArrowRight className="size-4" />
                 </Link>
+                <Link to={"../manage-contact-us-requests"} className="border rounded-md p-4 flex items-end justify-between gap-4">
+                    <div className="grid truncate">
+                        <span className="smallTitle">Contact us requests</span>
+                        <span className="text-xs text-muted-foreground">Manage contact us requests</span>
+                    </div>
+                    <ArrowRight className="size-4" />
+                </Link>
             </div>
         </div>
      );

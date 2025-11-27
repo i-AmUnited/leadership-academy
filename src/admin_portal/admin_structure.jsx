@@ -3,6 +3,7 @@ import SignIn from "./signIn";
 import AdminActions from "./adminActions";
 import ManageAchievements from "./manageAchievements";
 import AdmissionRequests from "./manageAdmissionRequests";
+import ContactRequests from "./manageContactRequests";
 
 const Admin = () => {
     return ( 
@@ -12,6 +13,7 @@ const Admin = () => {
           <Route path="dashboard" element={<AdminActions />} />
           <Route path="manage-achievements" element={<ManageAchievements />} />
           <Route path="manage-admission-requests" element={<AdmissionRequests />} />
+          <Route path="manage-contact-us-requests" element={<ContactRequests />} />
         </Routes>
         </div>
      );

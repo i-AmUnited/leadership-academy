@@ -72,6 +72,25 @@ export const SingleAdmissionDetails = createAsyncThunk(
   }
 );
 
+export const ContactUsRequestList = createAsyncThunk(
+  "user/contactUsRequestList",
+  async() => {
+      const contactUsListEndpoint = await apiEndPoints.listContactUsRequest();
+      const response = await contactUsListEndpoint.data;
+      // console.log("sdkjnsjd")
+      return response;
+  }
+)
+
+export const CreateContactUsRequest = createAsyncThunk(
+  "user/createContactUsRequest",
+  async() => {
+      const createContactEndPoint = await apiEndPoints.createContactUsRequest();
+      const response = await createContactEndPoint.data;
+      return response;
+  }
+)
+
 const slice = createSlice ({
   name: "user",
   initialState : initialState,
@@ -88,7 +107,12 @@ const slice = createSlice ({
         }
       })
 
-      .addCase(AdmissionRequestList.fulfilled, (state, action) => {
+      .addMatcher(
+        isAnyOf(
+          AdmissionRequestList.fulfilled,
+          ContactUsRequestList.fulfilled
+        ),
+        (state, action) => {
         state.loading = false;
         if (action.payload.status_code === "0") {
           state.users = action.payload.result;
@@ -104,7 +128,8 @@ const slice = createSlice ({
           UpdateAchievements.fulfilled,
           ToggleAchievement.fulfilled,
           CreateAdmission.fulfilled,
-          SingleAdmissionDetails.fulfilled
+          SingleAdmissionDetails.fulfilled,
+          CreateContactUsRequest.fulfilled
         ),
         (state, action) => {
           state.loading = false;
@@ -125,7 +150,9 @@ const slice = createSlice ({
           ToggleAchievement.pending,
           CreateAdmission.pending,
           AdmissionRequestList.pending,
-          SingleAdmissionDetails.pending
+          SingleAdmissionDetails.pending,
+          ContactUsRequestList.pending,
+          CreateContactUsRequest.pending
         ),
         (state) => {
           state.loading = true;
@@ -141,7 +168,9 @@ const slice = createSlice ({
           ToggleAchievement.rejected,
           CreateAdmission.rejected,
           AdmissionRequestList.rejected,
-          SingleAdmissionDetails.rejected
+          SingleAdmissionDetails.rejected,
+          ContactUsRequestList.rejected,
+          CreateContactUsRequest.rejected
         ),
         (state, action) => {
           state.loading = false;
