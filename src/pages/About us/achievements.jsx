@@ -1,7 +1,9 @@
 import { useAchievements } from "../../lib/reuseableEffects";
 import achievementIcon from "../../assets/logo and icons/achievement.png"
+import { useSelector } from "react-redux";
+import Spinner from "../../components/Spinners/spinner";
 const Achievements = () => {
-    // const achievements = [
+    // const achievement = [
     //       {
     //         year: "2024",
     //         achievement: "1st position Spelling Bee – Ondo State Education Awards",
@@ -18,9 +20,12 @@ const Achievements = () => {
     //         icon: achievementIcon,
     //       },
     // ]
-    const achievements = useAchievements();
+    const { achievements } = useAchievements();
+    //  console.log(achievements)
     return ( 
         <div className="px-4 md:px-[120px] lg:px-[231px] py-20 grid gap-10 bg-[#fafafa]">
+          
+        <Spinner loading={useSelector((state) => state.user).loading} />
             <div className="text-center">
             <div className="flex justify-center">
                 <div className="smallTitle w-fit grid relative">

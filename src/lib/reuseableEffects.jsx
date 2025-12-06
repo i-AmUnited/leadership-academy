@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { Achievements, AdmissionRequestList, ContactUsRequestList, SingleAdmissionDetails } from '../hooks/local/reducer';
+import { Achievements, AdmissionRequestList, BlogDetail, BlogList, ContactUsRequestList, GalleryList, SingleAdmissionDetails, StaffList } from '../hooks/local/reducer';
 
 
 export function useAchievements() {
@@ -78,4 +78,84 @@ export function useContactUsRequestList() {
   }, [dispatch]);
 
   return { requests: listContactRequests, refetch: fetchContactRequests };
+}
+
+export function useBlogList() {
+  const [listBlogPosts, setListBlogPosts] = useState([])
+  const dispatch = useDispatch();
+  
+  const fetchBlogPosts = async() => {
+    try {
+        const {payload} = await dispatch(BlogList());
+        setListBlogPosts(payload.result);
+        // console.log(payload.result);
+    }
+    catch(e){}
+  }
+  
+  useEffect(() => {
+    fetchBlogPosts();
+  }, [dispatch]);
+
+  return { posts: listBlogPosts, refetch: fetchBlogPosts };
+}
+
+export function useBlogDetail(blogID) {
+  const [blogDetail, setBlogDetail] = useState([])
+  const dispatch = useDispatch();
+  
+  const fetchBlogDetail = async() => {
+    try {
+        const {payload} = await dispatch(BlogDetail(blogID));
+        setBlogDetail(payload.result);
+        // console.log(payload.result, "kjjkbj");
+    }
+    catch(e){}
+  }
+  
+  useEffect(() => {
+    fetchBlogDetail();
+  }, [dispatch]);
+
+  return { detail: blogDetail, refetch: fetchBlogDetail };
+}
+
+export function useStaffList() {
+  const [listStaff, setListStaff] = useState([])
+  const dispatch = useDispatch();
+  
+  const fetchStaff = async() => {
+    try {
+        const {payload} = await dispatch(StaffList());
+        setListStaff(payload.result);
+        // console.log(payload.result);
+    }
+    catch(e){}
+  }
+  
+  useEffect(() => {
+    fetchStaff();
+  }, [dispatch]);
+
+  return { staff: listStaff, refetch: fetchStaff };
+}
+
+export function useGalleryList() {
+  const [listGallery, setListGallery] = useState([])
+  const dispatch = useDispatch();
+  
+  const fetchGallery = async() => {
+    try {
+        const {payload} = await dispatch(GalleryList());
+        setListGallery(payload.result);
+        // console.log(payload.result);
+    }
+    catch(e){}
+  }
+  
+  useEffect(() => {
+    fetchGallery();
+  }, [dispatch]);
+
+  return { gallery: listGallery, refetch: fetchGallery };
 }

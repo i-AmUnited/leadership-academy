@@ -4,6 +4,7 @@ import AdminActions from "./adminActions";
 import ManageAchievements from "./manageAchievements";
 import AdmissionRequests from "./manageAdmissionRequests";
 import ContactRequests from "./manageContactRequests";
+import ManageNews from "./manageNews";
 
 const Admin = () => {
     return ( 
@@ -14,6 +15,7 @@ const Admin = () => {
           <Route path="manage-achievements" element={<ManageAchievements />} />
           <Route path="manage-admission-requests" element={<AdmissionRequests />} />
           <Route path="manage-contact-us-requests" element={<ContactRequests />} />
+          <Route path="manage-blog-posts" element={<ManageNews />} />
         </Routes>
         </div>
      );

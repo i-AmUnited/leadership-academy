@@ -1,6 +1,5 @@
 import { Button } from "../../components/ui/button"
 import { Checkbox } from "../../components/ui/checkbox"
-import blogImage from "../../assets/images/staff_1.png"
 import arrowIcon from "../../assets/logo and icons/arrow-right.png"
 import {
   Pagination,
@@ -11,9 +10,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../../components/ui/pagination"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { useBlogList } from "../../lib/reuseableEffects"
+import { useSelector } from "react-redux"
+import Spinner from "../../components/Spinners/spinner";
+import { Link } from "react-router-dom";
 
 const BlogList = () => {
+
+  const loading = useSelector((state) => state.user.loading);
+  const tlaoURL = "http://tlao.ristherhen.com/tlao_api/"
+
+  const { posts } = useBlogList();
+  // console.log(posts)
 
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 6
@@ -78,110 +87,36 @@ const BlogList = () => {
     setCurrentPage(1)
   }
 
-    const blogPosts = [
-  {
-    image: blogImage,
-    title: "Annual School Fair Brings Families Together",
-    post: "Parents and students gathered for a day of games, food, and community bonding at the annual school fair.",
-    topic: "parents",
-    category: "events",
-    year: 2025,
-  },
-  {
-    image: blogImage,
-    title: "Student Wins National Science Award",
-    post: "A final-year student took home the National Science Award for her groundbreaking project on renewable energy.",
-    topic: "students",
-    category: "news",
-    year: 2025,
-  },
-  {
-    image: blogImage,
-    title: "Teacher Recognized for Outstanding Service",
-    post: "Mrs. Adewale was honored for her 20 years of dedicated service and mentorship to the school community.",
-    topic: "staff achievements",
-    category: "announcements",
-    year: 2024,
-  },
-  {
-    image: blogImage,
-    title: "Graduation Day 2024: A Celebration of Success",
-    post: "The 2024 graduating class celebrated their accomplishments with family, friends, and staff at a joyful ceremony.",
-    topic: "students",
-    category: "events",
-    year: 2024,
-  },
-  {
-    image: blogImage,
-    title: "Parent-Teacher Meeting Highlights Academic Growth",
-    post: "This year’s parent-teacher meeting focused on fostering stronger communication between home and school.",
-    topic: "parents",
-    category: "news",
-    year: 2025,
-  },
-  {
-    image: blogImage,
-    title: "Sports Day Sparks Friendly Competition",
-    post: "Students showed team spirit and sportsmanship at the annual inter-house sports competition.",
-    topic: "students",
-    category: "events",
-    year: 2023,
-  },
-  {
-    image: blogImage,
-    title: "Library Receives Major Upgrade",
-    post: "The school library now features a digital catalog and new reading zones to encourage more student engagement.",
-    topic: "staff achievements",
-    category: "news",
-    year: 2025,
-  },
-  {
-    image: blogImage,
-    title: "Parent Fundraiser Exceeds Expectations",
-    post: "Parents helped raise funds for new playground equipment, surpassing the school’s goal by 40%.",
-    topic: "parents",
-    category: "events",
-    year: 2024,
-  },
-  {
-    image: blogImage,
-    title: "Scholarship Program Announced for Top Students",
-    post: "A new scholarship initiative will reward exceptional academic performance and community involvement.",
-    topic: "students",
-    category: "announcements",
-    year: 2025,
-  },
-  {
-    image: blogImage,
-    title: "Staff Participate in Innovative Teaching Workshop",
-    post: "Teachers took part in a professional development program focused on integrating technology in the classroom.",
-    topic: "staff achievements",
-    category: "news",
-    year: 2023,
-  },
-];
-
   // Filter blog posts
+  // Ensures filters recompute when posts change and guards against malformed data
   const filteredPosts = useMemo(() => {
-    return blogPosts.filter(post => {
-      // Content filter
-      const contentMatch = contentFilters.all || contentFilters[post.category]
-      
-      // Topic filter
-      const topicMatch = topicFilters.all || topicFilters[post.topic]
-      
-      // Date filter
+    if (!Array.isArray(posts)) return []
+    return posts.filter(post => {
+      const categoryKey = (post?.category || '').toLowerCase()
+      const topicKey = (post?.topic || '').toLowerCase()
+
+      const contentMatch = contentFilters.all || !!contentFilters[categoryKey]
+      const topicMatch = topicFilters.all || !!topicFilters[topicKey]
+
       let dateMatch = dateFilters.all
       if (!dateMatch) {
-        if (dateFilters.twentyFour) dateMatch = dateMatch || post.year === 2024
-        if (dateFilters.twentyThree) dateMatch = dateMatch || post.year === 2023
-        if (dateFilters.older) dateMatch = dateMatch || post.year < 2023
-        if (dateFilters.thisTerm || dateFilters.lastTerm) dateMatch = dateMatch || post.year === 2025
+        const year = Number(post?.year)
+        if (dateFilters.twentyFour) dateMatch = dateMatch || year === 2024
+        if (dateFilters.twentyThree) dateMatch = dateMatch || year === 2023
+        if (dateFilters.older) dateMatch = dateMatch || year < 2023
+        if (dateFilters.thisTerm || dateFilters.lastTerm) dateMatch = dateMatch || year === 2025
       }
-      
+
       return contentMatch && topicMatch && dateMatch
     })
-  }, [contentFilters, topicFilters, dateFilters])
+  }, [posts, contentFilters, topicFilters, dateFilters])
+
+  // Reset to first page whenever new posts arrive to ensure immediate rendering
+  // of the first page after data fetch and on filter reset
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [posts])
+
 
   // Pagination logic
   const totalPages = Math.ceil(filteredPosts.length / itemsPerPage)
@@ -289,30 +224,39 @@ const BlogList = () => {
               </div>
               </span>
             </div>
-            <div className="lg:col-span-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {currentPosts.length > 0 ? (
+            <div
+              className="lg:col-span-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-opacity duration-300"
+              aria-busy={loading}
+              style={{ opacity: loading ? 0.6 : 1 }}
+            >
+              {
+                loading ?
+                (<Spinner loading={loading} />) :
+                 currentPosts.length > 0 ? (
                 currentPosts.map((item, index) => (
                   <div key={index} className="">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="aspect-video object-cover rounded-lg"
-                    />
-                    <div className="grid text-sm mt-2">
-                      <span className="font-semibold">{item.title}</span>
-                      <span className="leading-6 line-clamp-2 text-gray-600">{item.post}</span>
-                      <span className="text-sm flex items-center gap-3 mt-5 text-blue-600 cursor-pointer hover:text-blue-800">
-                        <span>Read more</span>
-                        <img src={arrowIcon} alt="" className="size-4"/>
-                      </span>
-                    </div>
+                    <Link to={`/blog/${btoa(item.id)}`}>
+                      <img
+                        src={`${tlaoURL}${item.image_url}`}
+                        alt={item.title}
+                        className="aspect-video object-cover rounded-lg"
+                      />
+                      <div className="grid text-sm mt-2">
+                        <span className="font-semibold">{item.title}</span>
+                        <span className="leading-6 line-clamp-2 text-gray-600">{item.body}</span>
+                        <span className="text- flex items-center gap-3 mt-5 text-blue-600 cursor-pointer hover:text-blue-800">
+                          <span>Read more</span>
+                          <img src={arrowIcon} alt="" className="size-4"/>
+                        </span>
+                      </div>
+                    </Link>
                   </div>
                 ))
               ) : (
                 <div className="col-span-full text-center py-12 text-gray-500">
                   No posts found matching your filters.
                 </div>
-              )}
+              )}             
               <div className="md:col-span-2 lg:col-span-3">
 {/* Pagination */}
             {totalPages > 1 && (

@@ -1,43 +1,26 @@
 import { useState } from 'react';
-import poster from "../assets/images/staff_1.png";
 import { Button } from "../components/ui/button";
 import { ChevronDown } from "lucide-react"
+import { useSelector } from 'react-redux';
+import Spinner from '../components/Spinners/spinner';
+import { useGalleryList } from '../lib/reuseableEffects';
 
 const Gallery = () => {
-    const images = [
-          { id: 1, image: poster },
-          { id: 2, image: poster },
-          { id: 3, image: poster },
-          { id: 4, image: poster },
-          { id: 5, image: poster },
-          { id: 6, image: poster },
-          { id: 7, image: poster },
-          { id: 8, image: poster },
-          { id: 9, image: poster },
-          { id: 10, image: poster },
-          { id: 11, image: poster },
-          { id: 12, image: poster },
-          { id: 13, image: poster },
-          { id: 14, image: poster },
-          { id: 15, image: poster },
-          { id: 16, image: poster },
-          { id: 17, image: poster },
-          { id: 18, image: poster },
-          { id: 19, image: poster },
-          { id: 20, image: poster },
-    ];
-
+  const {gallery} = useGalleryList();
+  const tlaoURL = "http://tlao.ristherhen.com/tlao_api/"
+   
     const [visibleCount, setVisibleCount] = useState(5);
 
     const loadMore = () => {
-        setVisibleCount(prev => Math.min(prev + 5, images.length));
+        setVisibleCount(prev => Math.min(prev + 5, gallery.length));
     };
 
-    const visibleImages = images.slice(0, visibleCount);
-    const hasMore = visibleCount < images.length;
+    const visibleImages = gallery.slice(0, visibleCount);
+    const hasMore = visibleCount < gallery.length;
 
     return (
       <div className="py-20 grid gap-10">
+        <Spinner loading={useSelector((state) => state.user).loading} />
         <div className="text-center px-4 md:px-[120px] lg:px-[231px]">
           <div className="flex justify-center">
             <div className="smallTitle w-fit grid relative">
@@ -59,12 +42,12 @@ const Gallery = () => {
             {visibleImages.map((item, index) => (
               <img
                 key={item.id}
-                src={item.image}
+                src={`${tlaoURL}${item.image_url}`}
                 alt=""
-                className={`w-full h-full object-cover ${
+                className={`w-full object-cover ${
                   (index - 3) % 5 === 0 && index >= 3
                     ? "lg:col-span-2 aspect-video"
-                    : ""
+                    : "aspect-square h-auto"
                 }`}
               />
             ))}

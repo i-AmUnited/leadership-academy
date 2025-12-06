@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 
-export const base_url = 'http://tlao.ristherhen.com/tlao_api/v1/api/';
+export const base_url = 'http://tlao.ristherhen.com/tlao_api/v1/api';
 
 export const api_header = {
     'Content-Type': 'application/x-www-form-urlencoded',

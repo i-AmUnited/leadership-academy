@@ -27,6 +27,13 @@ const AdminActions = () => {
                     </div>
                     <ArrowRight className="size-4" />
                 </Link>
+                <Link to={"../manage-blog-posts"} className="border rounded-md p-4 flex items-end justify-between gap-4">
+                    <div className="grid truncate">
+                        <span className="smallTitle">Manage news</span>
+                        <span className="text-xs text-muted-foreground">Manage blog posts and news events</span>
+                    </div>
+                    <ArrowRight className="size-4" />
+                </Link>
             </div>
         </div>
      );

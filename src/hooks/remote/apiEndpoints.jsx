@@ -100,4 +100,58 @@ export class apiEndPoints {
     }
   }
 
+  static async listBlogPosts(data) {
+    try {
+      return formDataApiClient.get("/get_news_events", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async createBlogPost(data) {
+    try {
+      return formDataApiClient.post("/create_news_event", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async updateBlogPost(data) {
+    try {
+      return formDataApiClient.post("/update_news_event", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async singleBlogPost(blogID) {
+    try {
+      return formDataApiClient.get(`/get_news_event?id=${blogID}`);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async listStaff(data) {
+    try {
+      return formDataApiClient.get("/get_our_staffs", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async listGallery(data) {
+    try {
+      return formDataApiClient.get("/get_galleries", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
 }

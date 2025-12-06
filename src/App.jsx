@@ -148,7 +148,7 @@ function App() {
         <Route path="/admissions" element={<Admissions />} />
         <Route path="/academics" element={<Academics />} />
         <Route path="/blog" element={<BlogList />} />
-        <Route path="/blog/post" element={<BlogPost />} />
+        <Route path="/blog/:blogID" element={<BlogPost />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/manage-tlao/*" element={<Admin />} />

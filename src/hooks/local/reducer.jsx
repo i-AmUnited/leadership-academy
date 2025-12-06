@@ -91,6 +91,61 @@ export const CreateContactUsRequest = createAsyncThunk(
   }
 )
 
+export const BlogList = createAsyncThunk(
+  "user/blogPostList",
+  async() => {
+      const blogPostListEndpoint = await apiEndPoints.listBlogPosts();
+      const response = await blogPostListEndpoint.data;
+      return response;
+  }
+)
+
+export const BlogDetail = createAsyncThunk(
+  "user/blogDetail",
+  async (blogID) => {
+    const blogDetailEndPoint = await apiEndPoints.singleBlogPost(blogID);
+    const response = await blogDetailEndPoint.data;
+    // console.log(response)
+    return response;
+  }
+);
+
+export const UpdateBlog = createAsyncThunk(
+  "user/updateBlogImage",
+  async() => {
+      const updatePostEndPoint = await apiEndPoints.updateBlogPost();
+      const response = await updatePostEndPoint.data;
+      return response;
+  }
+)
+
+export const CreateBlog = createAsyncThunk(
+  "user/createBlogImage",
+  async() => {
+      const createPostEndPoint = await apiEndPoints.createBlogPost();
+      const response = await createPostEndPoint.data;
+      return response;
+  }
+)
+
+export const StaffList = createAsyncThunk(
+  "user/staffList",
+  async() => {
+      const staffListEndpoint = await apiEndPoints.listStaff();
+      const response = await staffListEndpoint.data;
+      return response;
+  }
+)
+
+export const GalleryList = createAsyncThunk(
+  "user/galleryList",
+  async() => {
+      const galleryListEndpoint = await apiEndPoints.listGallery();
+      const response = await galleryListEndpoint.data;
+      return response;
+  }
+)
+
 const slice = createSlice ({
   name: "user",
   initialState : initialState,
@@ -110,7 +165,11 @@ const slice = createSlice ({
       .addMatcher(
         isAnyOf(
           AdmissionRequestList.fulfilled,
-          ContactUsRequestList.fulfilled
+          ContactUsRequestList.fulfilled,
+          BlogList.fulfilled,
+          BlogDetail.fulfilled,
+          StaffList.fulfilled, 
+          GalleryList.fulfilled
         ),
         (state, action) => {
         state.loading = false;
@@ -129,7 +188,9 @@ const slice = createSlice ({
           ToggleAchievement.fulfilled,
           CreateAdmission.fulfilled,
           SingleAdmissionDetails.fulfilled,
-          CreateContactUsRequest.fulfilled
+          CreateContactUsRequest.fulfilled,
+          UpdateBlog.fulfilled, 
+          CreateBlog.fulfilled
         ),
         (state, action) => {
           state.loading = false;
@@ -152,7 +213,13 @@ const slice = createSlice ({
           AdmissionRequestList.pending,
           SingleAdmissionDetails.pending,
           ContactUsRequestList.pending,
-          CreateContactUsRequest.pending
+          CreateContactUsRequest.pending,
+          BlogList.pending,
+          BlogDetail.pending,
+          StaffList.pending,
+          GalleryList.pending,
+          UpdateBlog.pending,
+          CreateBlog.pending
         ),
         (state) => {
           state.loading = true;
@@ -170,7 +237,13 @@ const slice = createSlice ({
           AdmissionRequestList.rejected,
           SingleAdmissionDetails.rejected,
           ContactUsRequestList.rejected,
-          CreateContactUsRequest.rejected
+          CreateContactUsRequest.rejected,
+          BlogList.rejected,
+          BlogDetail.rejected,
+          StaffList.rejected,
+          GalleryList.rejected,
+          UpdateBlog.rejected,
+          CreateBlog.rejected
         ),
         (state, action) => {
           state.loading = false;

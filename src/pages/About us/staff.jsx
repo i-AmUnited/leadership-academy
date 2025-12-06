@@ -1,57 +1,58 @@
-import staff_1 from "../../assets/images/staff_1.png"
-import staff_2 from "../../assets/images/staff_2.png"
-import staff_3 from "../../assets/images/staff_3.png"
-import staff_4 from "../../assets/images/staff_4.png"
-import staff_5 from "../../assets/images/staff_5.png"
-import staff_6 from "../../assets/images/staff_6.png"
-import staff_7 from "../../assets/images/staff_7.png"
-import staff_8 from "../../assets/images/staff_8.png"
+import { useSelector } from "react-redux";
+import { useStaffList } from "../../lib/reuseableEffects"
+import Spinner from "../../components/Spinners/spinner";
 
 const Staff = () => {
-    const staff = [
-              {
-                role: "Proprietor",
-                name: "Oluwole Arobieke",
-                profile: staff_1,
-              },
-              {
-                role: "Principal",
-                name: "Dr Akpan N I ",
-                profile: staff_2,
-              },
-              {
-                role: "Vice Principal Senior Section",
-                name: "Mr Ijalana Tosin",
-                profile: staff_3,
-              },
-              {
-                role: "Vice Principal Junior Section",
-                name: "Mr Owolabi Babatunde",
-                profile: staff_4,
-              },
-              {
-                role: "Physical Education Instructor",
-                name: "Nneka Iyamu",
-                profile: staff_5,
-              },
-              {
-                role: "School Nurse",
-                name: "Efe Ighodaro",
-                profile: staff_6,
-              },
-              {
-                role: "Hostel Manager",
-                name: "Oluwatobi Adeyemi",
-                profile: staff_7,
-              },
-              {
-                role: "Speech-Language Pathologist",
-                name: "Emeka Omoregie",
-                profile: staff_8,
-              },
-        ]
+  const {staff} = useStaffList();
+
+  const tlaoURL = "http://tlao.ristherhen.com/tlao_api/"
+
+
+    // const staff = [
+    //           {
+    //             role: "Proprietor",
+    //             name: "Oluwole Arobieke",
+    //             profile: staff_1,
+    //           },
+    //           {
+    //             role: "Principal",
+    //             name: "Dr Akpan N I ",
+    //             profile: staff_2,
+    //           },
+    //           {
+    //             role: "Vice Principal Senior Section",
+    //             name: "Mr Ijalana Tosin",
+    //             profile: staff_3,
+    //           },
+    //           {
+    //             role: "Vice Principal Junior Section",
+    //             name: "Mr Owolabi Babatunde",
+    //             profile: staff_4,
+    //           },
+    //           {
+    //             role: "Physical Education Instructor",
+    //             name: "Nneka Iyamu",
+    //             profile: staff_5,
+    //           },
+    //           {
+    //             role: "School Nurse",
+    //             name: "Efe Ighodaro",
+    //             profile: staff_6,
+    //           },
+    //           {
+    //             role: "Hostel Manager",
+    //             name: "Oluwatobi Adeyemi",
+    //             profile: staff_7,
+    //           },
+    //           {
+    //             role: "Speech-Language Pathologist",
+    //             name: "Emeka Omoregie",
+    //             profile: staff_8,
+    //           },
+    //     ]
     return ( 
          <div className="px-4 md:px-[120px] lg:px-[231px] py-20 grid gap-10 bg-[#fafafa]">
+            <Spinner loading={useSelector((state) => state.user).loading} />
             <div className="text-center">
             <div className="flex justify-center">
                 <div className="smallTitle w-fit grid relative">
@@ -70,13 +71,13 @@ const Staff = () => {
             {staff.map((item, index) => (
               <div key={index}>
                 <img
-                  src={item.profile}
+                  src={`${tlaoURL}${item.image_url}`}
                   alt={item.year}
-                  className="aspect-square"
+                  className="aspect-square object-cover"
                 />
                 <div className="grid mt-4">
                  <span className="font-bold brandFont">{item.name}</span>
-                 <span className="leading-6 text-brandLightBlack/60 text-xs">{item.role}</span>
+                 <span className="leading-6 text-brandLightBlack/60 text-xs">{item.post}</span>
                 </div>
               </div>
             ))}

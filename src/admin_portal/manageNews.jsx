@@ -1,4 +1,4 @@
-import { useAchievements } from "../lib/reuseableEffects";
+import { useBlogList } from "../lib/reuseableEffects";
 import GoBack from "../components/back";
 import { formatDateTime } from "../lib/utils";
 import { Edit, Plus, ToggleLeft, ToggleRight } from "lucide-react";
@@ -19,10 +19,11 @@ import { CreateAchievements, ToggleAchievement, UpdateAchievements } from "../ho
 import { showSuccessToast } from "../hooks/constants";
 import Spinner from "../components/Spinners/spinner";
 import { useState } from "react";
+import { Textarea } from "../components/ui/textarea";
 
-const ManageAchievements = () => {
+const ManageNews = () => {
     const loading = useSelector((state) => state.user.loading);
-    const { achievements, refetch } = useAchievements();
+    const { posts, refetch } = useBlogList();
     // console.log(achievements)
     const dispatch = useDispatch();
 
@@ -78,17 +79,17 @@ const ManageAchievements = () => {
       },
     });
 
-    const handleEditClick = (achievement) => {
+    const handleEditClick = (post) => {
       updateAchievementForm.setValues({
-        id: achievement.id,
-        title: achievement.title,
-        year: achievement.year
+        id: post.id,
+        title: post.title,
+        body: post.body
       });
       setIsUpdateDialogOpen(true);
     };
 
     const handleToggleStatus = async (achievementId, currentStatus) => {
-      // Toggle the status: if current is "1" (active), set to "0" (inactive) and vice versa
+        
       const newStatus = currentStatus === "1" ? "0" : "1";
 
       const { payload } = await dispatch(
@@ -111,19 +112,19 @@ const ManageAchievements = () => {
         <Spinner loading={useSelector((state) => state.user).loading} />
         <GoBack />
         <div className="flex items-center justify-between">
-          <p className="brandFont font-bold text-xl">Manage Achievements</p>
+          <p className="brandFont font-bold text-xl">Manage Blog Posts</p>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <div className="text-xs font-semibold flex items-center gap-1 text-brandBlue cursor-pointer p-2 hover:bg-gray-50">
                 <Plus className="size-4" />
-                <span>Create achievement</span>
+                <span>Create blog post</span>
               </div>
             </DialogTrigger>
 
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle className="text-sm font-bold text-start">
-                  Create Achievement
+                  Create Blog Post
                 </DialogTitle>
               </DialogHeader>
 
@@ -192,10 +193,7 @@ const ManageAchievements = () => {
                   No.
                 </th>
                 <th scope="col" className="pe-6 py-[18px] whitespace-nowrap">
-                  Achievement title
-                </th>
-                <th scope="col" className="px-6 py-[18px] whitespace-nowrap">
-                  Year
+                  Blog post title
                 </th>
                 <th scope="col" className="px-6 py-[18px] whitespace-nowrap">
                   Date created
@@ -209,7 +207,7 @@ const ManageAchievements = () => {
               </tr>
             </thead>
             <tbody>
-              {achievements.map((row, index) => (
+              {posts.map((row, index) => (
                 <tr
                   key={index}
                   className="hover:bg-[#c4c4c416] transition duration-500 relative"
@@ -220,9 +218,8 @@ const ManageAchievements = () => {
                   <td className="text-start py-4 pe-6 ps-1 max-w-60 md:max-w-80 truncate">
                     {row.title}
                   </td>
-                  <td className="text-start py-4 ps-6"> {row.year}</td>
                   <td className="text-start py-4 ps-6">
-                    {formatDateTime(row.inserted_at)}
+                    {formatDateTime(row.inserted_dt)}
                   </td>
                   <td
                     className={`text-start py-4 px-6 font-semibold ${
@@ -242,7 +239,7 @@ const ManageAchievements = () => {
                       <DialogContent className="max-w-md">
                         <DialogHeader>
                           <DialogTitle className="text-sm font-bold text-start">
-                            Edit Achievement
+                            Edit Blog Post
                           </DialogTitle>
                         </DialogHeader>
 
@@ -271,11 +268,11 @@ const ManageAchievements = () => {
                           </div>
 
                           <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="update-year">Year</Label>
-                            <Input
+                            <Label htmlFor="update-year">Blog content</Label>
+                            <Textarea
                               type="text"
                               id="update-year"
-                              placeholder="2025"
+                            //   placeholder="2025"
                               name={"year"}
                               value={updateAchievementForm.values.year}
                               onChange={updateAchievementForm.handleChange}
@@ -315,4 +312,4 @@ const ManageAchievements = () => {
     );
 }
  
-export default ManageAchievements;
+export default ManageNews;
