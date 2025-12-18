@@ -15,38 +15,61 @@ import Button from "../components/button";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { CreateAchievements, ToggleAchievement, UpdateAchievements } from "../hooks/local/reducer";
+import { CreateBlog, ToggleAchievement, UpdateBlog } from "../hooks/local/reducer";
 import { showSuccessToast } from "../hooks/constants";
 import Spinner from "../components/Spinners/spinner";
 import { useState } from "react";
 import { Textarea } from "../components/ui/textarea";
 
+const generateListId = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 16; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
 const ManageNews = () => {
     const loading = useSelector((state) => state.user.loading);
     const { posts, refetch } = useBlogList();
-    // console.log(achievements)
     const dispatch = useDispatch();
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
 
-    const createAchievementForm = useFormik({
+    const createPostForm = useFormik({
       initialValues: {
         title: "",
-        year: "",
+        body: "",
+        upload_image: null,
+        list_id: "",
       },
       validationSchema: Yup.object({
-        title: Yup.string().required("Please provide an achievement"),
-        year: Yup.string().required("Please provide a year"),
+        title: Yup.string().max(100, "Title must be 100 characters or less").required("Please provide a title"),
+        body: Yup.string().required("Please provide content"),
+        upload_image: Yup.mixed()
+          .required("Please upload an image")
+          .test("fileType", "Unsupported file format", (value) => {
+            if (!value) return false;
+            return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
+          }),
       }),
       onSubmit: async (values, { resetForm }) => {
-        const { title, year } = values;
-        let createAchievementData = { title, year };
+        const { title, body, upload_image } = values;
+        const list_id = generateListId();
+        
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("body", body);
+        formData.append("upload_image", upload_image);
+        formData.append("list_id", list_id);
+
         const { payload } = await dispatch(
-          CreateAchievements(createAchievementData)
+          CreateBlog(formData)
         );
         if (payload.status_code === "0") {
-          showSuccessToast("Achievment created");
+          showSuccessToast("Blog post created");
           resetForm();
           setIsDialogOpen(false);
           refetch();
@@ -54,24 +77,40 @@ const ManageNews = () => {
       },
     });
 
-    const updateAchievementForm = useFormik({
+    const updatePostForm = useFormik({
       initialValues: {
         id: "",
         title: "",
-        year: "",
+        body: "",
+        upload_image: null,
+        list_id: "",
       },
       validationSchema: Yup.object({
-        title: Yup.string().required("Please provide an achievement"),
-        year: Yup.string().required("Please provide a year"),
+        title: Yup.string().max(100, "Title must be 100 characters or less").required("Please provide a title"),
+        body: Yup.string().required("Please provide content"),
+        upload_image: Yup.mixed()
+          .test("fileType", "Unsupported file format", (value) => {
+            if (!value) return true;
+            return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
+          }),
       }),
       onSubmit: async (values, { resetForm }) => {
-        const { id, title, year } = values;
-        let updateAchievementData = { id, title, year };
+        const { id, title, body, upload_image, list_id } = values;
+        
+        const formData = new FormData();
+        formData.append("id", id);
+        formData.append("title", title);
+        formData.append("body", body);
+        formData.append("list_id", list_id);
+        if (upload_image) {
+          formData.append("upload_image", upload_image);
+        }
+
         const { payload } = await dispatch(
-          UpdateAchievements(updateAchievementData)
+          UpdateBlog(formData)
         );
         if (payload.status_code === "0") {
-          showSuccessToast("Achievment updated");
+          showSuccessToast("Blog post updated");
           resetForm();
           setIsUpdateDialogOpen(false);
           refetch();
@@ -80,10 +119,12 @@ const ManageNews = () => {
     });
 
     const handleEditClick = (post) => {
-      updateAchievementForm.setValues({
+      updatePostForm.setValues({
         id: post.id,
         title: post.title,
-        body: post.body
+        body: post.body,
+        list_id: post.list_id || "",
+        upload_image: null
       });
       setIsUpdateDialogOpen(true);
     };
@@ -101,7 +142,7 @@ const ManageNews = () => {
 
       if (payload.status_code === "0") {
         showSuccessToast(
-          `Achievement ${newStatus === "0" ? "activated" : "deactivated"}`
+          `Post ${newStatus === "0" ? "activated" : "deactivated"}`
         );
         refetch();
       }
@@ -130,7 +171,7 @@ const ManageNews = () => {
 
               {/* FORM CONTENT */}
               <form
-                onSubmit={createAchievementForm.handleSubmit}
+                onSubmit={createPostForm.handleSubmit}
                 className="grid gap-4 mt-4"
               >
                 <div className="grid w-full items-center gap-2">
@@ -138,42 +179,61 @@ const ManageNews = () => {
                   <Input
                     type="text"
                     id="title"
-                    placeholder="Enter achievement title"
+                    placeholder="Enter blog title"
                     name={"title"}
-                    value={createAchievementForm.values.title}
-                    onChange={createAchievementForm.handleChange}
-                    onBlur={createAchievementForm.handleBlur}
+                    value={createPostForm.values.title}
+                    onChange={createPostForm.handleChange}
+                    onBlur={createPostForm.handleBlur}
                   />
                   <span className="text-red-500 text-xs">
-                    {createAchievementForm.touched.title &&
-                    createAchievementForm.errors.title
-                      ? createAchievementForm.errors.title
+                    {createPostForm.touched.title &&
+                    createPostForm.errors.title
+                      ? createPostForm.errors.title
                       : null}
                   </span>
                 </div>
 
                 <div className="grid w-full items-center gap-2">
-                  <Label htmlFor="year">Year</Label>
-                  <Input
-                    type="text"
-                    id="year"
-                    placeholder="2025"
-                    name={"year"}
-                    value={createAchievementForm.values.year}
-                    onChange={createAchievementForm.handleChange}
-                    onBlur={createAchievementForm.handleBlur}
+                  <Label htmlFor="body">Content</Label>
+                  <Textarea
+                    id="body"
+                    placeholder="Enter blog content"
+                    name={"body"}
+                    value={createPostForm.values.body}
+                    onChange={createPostForm.handleChange}
+                    onBlur={createPostForm.handleBlur}
                   />
                   <span className="text-red-500 text-xs">
-                    {createAchievementForm.touched.year &&
-                    createAchievementForm.errors.year
-                      ? createAchievementForm.errors.year
+                    {createPostForm.touched.body &&
+                    createPostForm.errors.body
+                      ? createPostForm.errors.body
+                      : null}
+                  </span>
+                </div>
+
+                <div className="grid w-full items-center gap-2">
+                  <Label htmlFor="upload_image">Upload Image</Label>
+                  <Input
+                    type="file"
+                    id="upload_image"
+                    accept=".jpg,.jpeg,.png,.gif"
+                    name="upload_image"
+                    onChange={(event) => {
+                      createPostForm.setFieldValue("upload_image", event.currentTarget.files[0]);
+                    }}
+                    onBlur={createPostForm.handleBlur}
+                  />
+                  <span className="text-red-500 text-xs">
+                    {createPostForm.touched.upload_image &&
+                    createPostForm.errors.upload_image
+                      ? createPostForm.errors.upload_image
                       : null}
                   </span>
                 </div>
 
                 <Button
                   role={"submit"}
-                  buttonText={"Create achievement"}
+                  buttonText={"Create blog post"}
                   background={"bg-brandLightBlue"}
                   textColor={"text-white"}
                   loading={loading}
@@ -245,7 +305,7 @@ const ManageNews = () => {
 
                         {/* FORM CONTENT */}
                         <form
-                          onSubmit={updateAchievementForm.handleSubmit}
+                          onSubmit={updatePostForm.handleSubmit}
                           className="grid gap-4 mt-4"
                         >
                           <div className="grid w-full items-center gap-2">
@@ -253,42 +313,61 @@ const ManageNews = () => {
                             <Input
                               type="text"
                               id="update-title"
-                              placeholder="Enter achievement title"
+                              placeholder="Enter blog title"
                               name={"title"}
-                              value={updateAchievementForm.values.title}
-                              onChange={updateAchievementForm.handleChange}
-                              onBlur={updateAchievementForm.handleBlur}
+                              value={updatePostForm.values.title}
+                              onChange={updatePostForm.handleChange}
+                              onBlur={updatePostForm.handleBlur}
                             />
                             <span className="text-red-500 text-xs">
-                              {updateAchievementForm.touched.title &&
-                              updateAchievementForm.errors.title
-                                ? updateAchievementForm.errors.title
+                              {updatePostForm.touched.title &&
+                              updatePostForm.errors.title
+                                ? updatePostForm.errors.title
                                 : null}
                             </span>
                           </div>
 
                           <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="update-year">Blog content</Label>
+                            <Label htmlFor="update-body">Content</Label>
                             <Textarea
-                              type="text"
-                              id="update-year"
-                            //   placeholder="2025"
-                              name={"year"}
-                              value={updateAchievementForm.values.year}
-                              onChange={updateAchievementForm.handleChange}
-                              onBlur={updateAchievementForm.handleBlur}
+                              id="update-body"
+                              placeholder="Enter blog content"
+                              name={"body"}
+                              value={updatePostForm.values.body}
+                              onChange={updatePostForm.handleChange}
+                              onBlur={updatePostForm.handleBlur}
                             />
                             <span className="text-red-500 text-xs">
-                              {updateAchievementForm.touched.year &&
-                              updateAchievementForm.errors.year
-                                ? updateAchievementForm.errors.year
+                              {updatePostForm.touched.body &&
+                              updatePostForm.errors.body
+                                ? updatePostForm.errors.body
+                                : null}
+                            </span>
+                          </div>
+
+                          <div className="grid w-full items-center gap-2">
+                            <Label htmlFor="update-upload_image">Upload Image</Label>
+                            <Input
+                              type="file"
+                              id="update-upload_image"
+                              accept=".jpg,.jpeg,.png,.gif"
+                              name="upload_image"
+                              onChange={(event) => {
+                                updatePostForm.setFieldValue("upload_image", event.currentTarget.files[0]);
+                              }}
+                              onBlur={updatePostForm.handleBlur}
+                            />
+                            <span className="text-red-500 text-xs">
+                              {updatePostForm.touched.upload_image &&
+                              updatePostForm.errors.upload_image
+                                ? updatePostForm.errors.upload_image
                                 : null}
                             </span>
                           </div>
 
                           <Button
                             role={"submit"}
-                            buttonText={"Update achievement"}
+                            buttonText={"Update blog post"}
                             background={"bg-brandLightBlue"}
                             textColor={"text-white"}
                             loading={loading}

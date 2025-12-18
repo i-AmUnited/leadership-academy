@@ -30,7 +30,7 @@ export class apiEndPoints {
 
   static async createAchievements(data) {
     try {
-      return formDataApiClient.post("/create_achievement", data);
+      return apiClient.post("/create_achievement", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -39,7 +39,7 @@ export class apiEndPoints {
 
   static async updateAchievements(data) {
     try {
-      return formDataApiClient.post("/update_achievement", data);
+      return apiClient.post("/update_achievement", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -57,7 +57,7 @@ export class apiEndPoints {
 
   static async createAdmissionRequest(data) {
     try {
-      return formDataApiClient.post("/create_save_admission_request", data);
+      return apiClient.post("/create_save_admission_request", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -93,7 +93,7 @@ export class apiEndPoints {
 
   static async createContactUsRequest(data) {
     try {
-      return formDataApiClient.post("/create_contact_us_request", data);
+      return apiClient.post("/create_contact_us_request", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;

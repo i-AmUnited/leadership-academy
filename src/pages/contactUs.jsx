@@ -56,8 +56,8 @@ const ContactUs = () => {
             </div>
           </div>
         </div>
-        <div className="px-4 md:px-[120px] lg:px-[231px] grid grid-cols-1 lg:grid-cols-3">
-          <form onSubmit={contactUsForm.handleSubmit} className="lg:col-span-2 pe-25">
+        <div className="px-4 md:px-[120px] lg:px-[231px] grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-0">
+          <form onSubmit={contactUsForm.handleSubmit} className="lg:col-span-2 lg:pe-25">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="grid w-full items-center gap-2">
                   <Label htmlFor="firstName">First name</Label>
@@ -170,7 +170,7 @@ const ContactUs = () => {
             />
           </form>
           <div className="lg:col-span-1">
-            <img src={banner} alt="" />
+            <img src={banner} alt="" className="h-full object-cover" />
           </div>
         </div>
       </div>

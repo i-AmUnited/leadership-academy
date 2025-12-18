@@ -20,8 +20,8 @@ export const Achievements = createAsyncThunk(
 
 export const CreateAchievements = createAsyncThunk(
   "user/createAchievements",
-  async() => {
-      const createAchievementsEndPoint = await apiEndPoints.createAchievements();
+  async(data) => {
+      const createAchievementsEndPoint = await apiEndPoints.createAchievements(data);
       const response = await createAchievementsEndPoint.data;
       return response;
   }
@@ -29,8 +29,8 @@ export const CreateAchievements = createAsyncThunk(
 
 export const UpdateAchievements = createAsyncThunk(
   "user/updateAchievements",
-  async() => {
-      const updateAchievementsEndPoint = await apiEndPoints.updateAchievements();
+  async(data) => {
+      const updateAchievementsEndPoint = await apiEndPoints.updateAchievements(data);
       const response = await updateAchievementsEndPoint.data;
       return response;
   }
@@ -47,8 +47,8 @@ export const ToggleAchievement = createAsyncThunk(
 
 export const CreateAdmission = createAsyncThunk(
   "user/createAdmissionRequest",
-  async() => {
-      const createAdmissionEndPoint = await apiEndPoints.createAdmissionRequest();
+  async(data) => {
+      const createAdmissionEndPoint = await apiEndPoints.createAdmissionRequest(data);
       const response = await createAdmissionEndPoint.data;
       return response;
   }
@@ -84,8 +84,8 @@ export const ContactUsRequestList = createAsyncThunk(
 
 export const CreateContactUsRequest = createAsyncThunk(
   "user/createContactUsRequest",
-  async() => {
-      const createContactEndPoint = await apiEndPoints.createContactUsRequest();
+  async(data) => {
+      const createContactEndPoint = await apiEndPoints.createContactUsRequest(data);
       const response = await createContactEndPoint.data;
       return response;
   }
@@ -112,8 +112,8 @@ export const BlogDetail = createAsyncThunk(
 
 export const UpdateBlog = createAsyncThunk(
   "user/updateBlogImage",
-  async() => {
-      const updatePostEndPoint = await apiEndPoints.updateBlogPost();
+  async(data) => {
+      const updatePostEndPoint = await apiEndPoints.updateBlogPost(data);
       const response = await updatePostEndPoint.data;
       return response;
   }
@@ -121,8 +121,8 @@ export const UpdateBlog = createAsyncThunk(
 
 export const CreateBlog = createAsyncThunk(
   "user/createBlogImage",
-  async() => {
-      const createPostEndPoint = await apiEndPoints.createBlogPost();
+  async(data) => {
+      const createPostEndPoint = await apiEndPoints.createBlogPost(data);
       const response = await createPostEndPoint.data;
       return response;
   }
