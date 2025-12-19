@@ -9,7 +9,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Spinner from "../../components/Spinners/spinner";
 import GoBack from "../../components/back";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
+import arrow from "../../assets/logo and icons/arrow-right.png";
 
 const BlogPost = () => {
   const { blogID } = useParams();
@@ -17,16 +18,25 @@ const BlogPost = () => {
   const { detail } = useBlogDetail(decryptedID);
 
   const { posts } = useBlogList();
-  // Randomly select 3 posts on initial load
+  
+  // Add blogID and decryptedID to dependencies
   const randomPosts = useMemo(() => {
-  if (!posts || posts.length === 0) return [];
+    if (!posts || posts.length === 0) return [];
+    
+    // Filter out the current post
+    const filteredPosts = posts.filter(post => post.id !== decryptedID);
+    
+    // Create a copy and shuffle
+    const shuffled = [...filteredPosts].sort(() => Math.random() - 0.5);
+    
+    // Return first 3 items (or less if array is smaller)
+    return shuffled.slice(0, Math.min(3, filteredPosts.length));
+  }, [posts, decryptedID]); // Added decryptedID to dependencies
   
-  // Create a copy and shuffle
-  const shuffled = [...posts].sort(() => Math.random() - 0.5);
-  
-  // Return first 3 items (or less if array is smaller)
-  return shuffled.slice(0, Math.min(3, posts.length));
-}, [posts.length]);
+  // Scroll to top when blogID changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [blogID]);
   
   const tlaoURL = "http://tlao.ristherhen.com/tlao_api/"
 
@@ -48,7 +58,12 @@ const BlogPost = () => {
       <Spinner loading={useSelector((state) => state.user).loading} />
         <div className="px-4 md:px-[120px] lg:px-[300px]">
           <div className="border-b pb-10 mb-5 text-center ">
-            <GoBack />
+            {/* <GoBack /> */}
+            <div className="flex items-start">
+              <Link to={"/blog"} className="cursor-pointer bg-brandLightBlue/10 text-brandLightBlue p-3 rounded-md mb-3">
+                <img src={arrow} alt="" className="h-5 rotate-180"/>
+              </Link>
+            </div>
             <div className="brandFont text-4xl font-bold text-pretty mb-6 mt-2 text-brandBlue">
            {detail[0]?.title}
             </div>

@@ -105,19 +105,36 @@ export const BlogDetail = createAsyncThunk(
   async (blogID) => {
     const blogDetailEndPoint = await apiEndPoints.singleBlogPost(blogID);
     const response = await blogDetailEndPoint.data;
-    // console.log(response)
     return response;
   }
 );
 
 export const UpdateBlog = createAsyncThunk(
-  "user/updateBlogImage",
+  "user/updateBlog",
   async(data) => {
       const updatePostEndPoint = await apiEndPoints.updateBlogPost(data);
       const response = await updatePostEndPoint.data;
       return response;
   }
 )
+
+export const UpdateBlogImage = createAsyncThunk(
+  "user/updateBlogImage",
+  async(data) => {
+      const updatePostImageEndPoint = await apiEndPoints.updateBlogPostImage(data);
+      const response = await updatePostImageEndPoint.data;
+      return response;
+  }
+)
+
+export const ToggleBlog = createAsyncThunk(
+  "user/toggleBlog",
+  async ({ postID, status }) => {
+    const toggleBlogEndPoint = await apiEndPoints.togglePostStatus(postID, status);
+    const response = await toggleBlogEndPoint.data;
+    return response;
+  }
+);
 
 export const CreateBlog = createAsyncThunk(
   "user/createBlogImage",
@@ -136,6 +153,42 @@ export const StaffList = createAsyncThunk(
       return response;
   }
 )
+
+export const CreateStaff = createAsyncThunk(
+  "user/createStaff",
+  async(data) => {
+      const createStaffEndPoint = await apiEndPoints.createStaff(data);
+      const response = await createStaffEndPoint.data;
+      return response;
+  }
+)
+
+export const UpdateStaff = createAsyncThunk(
+  "user/updateStaff",
+  async(data) => {
+      const updateStaffEndPoint = await apiEndPoints.updateStaff(data);
+      const response = await updateStaffEndPoint.data;
+      return response;
+  }
+)
+
+export const UpdateStaffImage = createAsyncThunk(
+  "user/updateStaffImage",
+  async(data) => {
+      const updateStaffImageEndPoint = await apiEndPoints.updateStaffImage(data);
+      const response = await updateStaffImageEndPoint.data;
+      return response;
+  }
+)
+
+export const ToggleStaff = createAsyncThunk(
+  "user/toggleStaff",
+  async ({ staffID, status }) => {
+    const toggleStaffEndPoint = await apiEndPoints.toggleStaffStatus(staffID, status);
+    const response = await toggleStaffEndPoint.data;
+    return response;
+  }
+);
 
 export const GalleryList = createAsyncThunk(
   "user/galleryList",
@@ -190,7 +243,13 @@ const slice = createSlice ({
           SingleAdmissionDetails.fulfilled,
           CreateContactUsRequest.fulfilled,
           UpdateBlog.fulfilled, 
-          CreateBlog.fulfilled
+          UpdateBlogImage.fulfilled, 
+          CreateBlog.fulfilled,
+          ToggleBlog.fulfilled,
+          CreateStaff.fulfilled,
+          UpdateStaff.fulfilled,
+          UpdateStaffImage.fulfilled,
+          ToggleStaff.fulfilled
         ),
         (state, action) => {
           state.loading = false;
@@ -217,9 +276,15 @@ const slice = createSlice ({
           BlogList.pending,
           BlogDetail.pending,
           StaffList.pending,
+          CreateStaff.pending,
+          UpdateStaff.pending,
+          UpdateStaffImage.pending,
+          ToggleStaff.pending,
           GalleryList.pending,
           UpdateBlog.pending,
-          CreateBlog.pending
+          UpdateBlogImage.pending, 
+          CreateBlog.pending,
+          ToggleBlog.pending
         ),
         (state) => {
           state.loading = true;
@@ -241,9 +306,15 @@ const slice = createSlice ({
           BlogList.rejected,
           BlogDetail.rejected,
           StaffList.rejected,
+          CreateStaff.rejected,
+          UpdateStaff.rejected,
+          UpdateStaffImage.rejected,
+          ToggleStaff.rejected,
           GalleryList.rejected,
           UpdateBlog.rejected,
-          CreateBlog.rejected
+          UpdateBlogImage.rejected, 
+          CreateBlog.rejected,
+          ToggleBlog.rejected
         ),
         (state, action) => {
           state.loading = false;

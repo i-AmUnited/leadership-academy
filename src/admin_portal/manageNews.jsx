@@ -1,7 +1,7 @@
 import { useBlogList } from "../lib/reuseableEffects";
 import GoBack from "../components/back";
 import { formatDateTime } from "../lib/utils";
-import { Edit, Plus, ToggleLeft, ToggleRight } from "lucide-react";
+import { Edit, Image, Plus, ToggleLeft, ToggleRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -15,19 +15,14 @@ import Button from "../components/button";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { CreateBlog, ToggleAchievement, UpdateBlog } from "../hooks/local/reducer";
-import { showSuccessToast } from "../hooks/constants";
+import { CreateBlog, ToggleBlog, UpdateBlog, UpdateBlogImage } from "../hooks/local/reducer";
+import { showSuccessToast, showErrorToast } from "../hooks/constants";
 import Spinner from "../components/Spinners/spinner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Textarea } from "../components/ui/textarea";
 
 const generateListId = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < 16; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
+   return Math.floor(1000 + Math.random() * 9000).toString();
 };
 
 const ManageNews = () => {
@@ -37,6 +32,60 @@ const ManageNews = () => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+    const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
+    const [selectedPost, setSelectedPost] = useState(null);
+    const [previewSrc, setPreviewSrc] = useState(null);
+    const [previewLoading, setPreviewLoading] = useState(false);
+    const [previewError, setPreviewError] = useState(null);
+
+    const tlaoURL = "http://tlao.ristherhen.com/tlao_api/";
+
+    const ImagePreview = ({ src, alt, loading, error }) => (
+      <div
+        className="w-[300px] h-[300px] mx-auto rounded-md overflow-hidden border relative flex items-center justify-center bg-gray-100"
+        aria-busy={loading}
+      >
+        {loading ? (
+          <div
+            className="animate-spin size-8 border-2 border-gray-300 border-t-brandLightBlue rounded-full"
+            aria-label="Loading image"
+          />
+        ) : error ? (
+          <div className="text-xs text-red-500" role="alert">{error}</div>
+        ) : src ? (
+          <img
+            src={src}
+            alt={alt || "Blog image preview"}
+            className="w-full h-full object-cover transition-opacity duration-300 ease-in-out"
+          />
+        ) : (
+          <div className="text-xs text-gray-500">No image available</div>
+        )}
+      </div>
+    );
+
+    useEffect(() => {
+      if (!isImageDialogOpen) return;
+      setPreviewError(null);
+      updateImageForm.setFieldValue("upload_image", null);
+      if (selectedPost && selectedPost.image_url) {
+        setPreviewLoading(true);
+        const url = `${tlaoURL}${selectedPost.image_url}`;
+        const img = new window.Image();
+        img.onload = () => {
+          setPreviewSrc(url);
+          setPreviewLoading(false);
+        };
+        img.onerror = () => {
+          setPreviewError("Unable to load image");
+          setPreviewLoading(false);
+          setPreviewSrc(null);
+        };
+        img.src = url;
+      } else {
+        setPreviewSrc(null);
+      }
+    }, [isImageDialogOpen, selectedPost]);
 
     const createPostForm = useFormik({
       initialValues: {
@@ -82,29 +131,20 @@ const ManageNews = () => {
         id: "",
         title: "",
         body: "",
-        upload_image: null,
         list_id: "",
       },
       validationSchema: Yup.object({
         title: Yup.string().max(100, "Title must be 100 characters or less").required("Please provide a title"),
         body: Yup.string().required("Please provide content"),
-        upload_image: Yup.mixed()
-          .test("fileType", "Unsupported file format", (value) => {
-            if (!value) return true;
-            return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-          }),
       }),
       onSubmit: async (values, { resetForm }) => {
-        const { id, title, body, upload_image, list_id } = values;
+        const { id, title, body, list_id } = values;
         
         const formData = new FormData();
         formData.append("id", id);
         formData.append("title", title);
         formData.append("body", body);
         formData.append("list_id", list_id);
-        if (upload_image) {
-          formData.append("upload_image", upload_image);
-        }
 
         const { payload } = await dispatch(
           UpdateBlog(formData)
@@ -118,24 +158,55 @@ const ManageNews = () => {
       },
     });
 
+    const updateImageForm = useFormik({
+      initialValues: {
+        id: "",
+        upload_image: null,
+      },
+      validationSchema: Yup.object({
+        upload_image: Yup.mixed()
+          .required("Please upload an image")
+          .test("fileType", "Unsupported file format. Please select JPG, PNG, or GIF.", (value) => {
+            if (!value) return false;
+            return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
+          })
+          .test("fileSize", "File too large. Max size is 5MB.", (value) => {
+            if (!value) return false;
+            return value.size <= 5 * 1024 * 1024;
+          }),
+      }),
+      onSubmit: async (values, { resetForm }) => {
+        const formData = new FormData();
+        formData.append("id", values.id);
+        formData.append("upload_image", values.upload_image);
+
+        const { payload } = await dispatch(UpdateBlogImage(formData));
+        if (payload.status_code === "0") {
+          showSuccessToast("Blog image updated");
+          resetForm();
+          setIsImageDialogOpen(false);
+          refetch();
+        }
+      },
+    });
+
     const handleEditClick = (post) => {
       updatePostForm.setValues({
         id: post.id,
         title: post.title,
         body: post.body,
         list_id: post.list_id || "",
-        upload_image: null
       });
       setIsUpdateDialogOpen(true);
     };
 
-    const handleToggleStatus = async (achievementId, currentStatus) => {
+    const handleToggleStatus = async (postId, currentStatus) => {
         
       const newStatus = currentStatus === "1" ? "0" : "1";
 
       const { payload } = await dispatch(
-        ToggleAchievement({
-          achievementID: achievementId,
+        ToggleBlog({
+          postID: postId,
           status: newStatus,
         })
       );
@@ -241,6 +312,90 @@ const ManageNews = () => {
               </form>
             </DialogContent>
           </Dialog>
+
+          <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-sm font-bold text-start">
+                Update Blog Image
+              </DialogTitle>
+            </DialogHeader>
+
+            <form
+              onSubmit={updateImageForm.handleSubmit}
+              className="grid gap-4 mt-4"
+            >
+                <ImagePreview
+                  src={previewSrc}
+                  alt={selectedPost?.title || "Blog image preview"}
+                  loading={previewLoading}
+                  error={previewError}
+                />
+
+              <div className="grid w-full items-center gap-2">
+                <Label htmlFor="update-image">Upload New Image</Label>
+                <Input
+                  type="file"
+                  id="update-image"
+                  accept=".jpg,.jpeg,.png,.gif"
+                  onChange={(event) => {
+                    const file = event.currentTarget.files && event.currentTarget.files[0];
+                    if (!file) {
+                      updateImageForm.setFieldValue("upload_image", null);
+                      setPreviewError(null);
+                      setPreviewSrc(selectedPost && selectedPost.image_url ? `${tlaoURL}${selectedPost.image_url}` : null);
+                      return;
+                    }
+                    const allowed = ["image/jpeg", "image/png", "image/gif"];
+                    if (!allowed.includes(file.type)) {
+                      const msg = "Unsupported file format. Please select JPG, PNG, or GIF.";
+                      updateImageForm.setFieldError("upload_image", msg);
+                      setPreviewError(msg);
+                      showErrorToast(msg);
+                      return;
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                      const msg = "File too large. Max size is 5MB.";
+                      updateImageForm.setFieldError("upload_image", msg);
+                      setPreviewError(msg);
+                      showErrorToast(msg);
+                      return;
+                    }
+                    updateImageForm.setFieldValue("upload_image", file);
+                    setPreviewError(null);
+                    setPreviewSrc(URL.createObjectURL(file));
+                  }}
+                />
+                <span className="text-red-500 text-xs" aria-live="assertive">
+                  {updateImageForm.touched.upload_image &&
+                  updateImageForm.errors.upload_image
+                    ? updateImageForm.errors.upload_image
+                    : null}
+                </span>
+                {updateImageForm.values.upload_image && (
+                  <button
+                    type="button"
+                    className="text-xs text-brandLightBlue underline w-fit"
+                    onClick={() => {
+                      updateImageForm.setFieldValue("upload_image", null);
+                      setPreviewSrc(selectedPost && selectedPost.image_url ? `${tlaoURL}${selectedPost.image_url}` : null);
+                    }}
+                  >
+                    Clear selection
+                  </button>
+                )}
+              </div>
+
+              <Button
+                role={"submit"}
+                buttonText={"Update image"}
+                background={"bg-brandLightBlue"}
+                textColor={"text-white"}
+                loading={loading}
+              />
+            </form>
+          </DialogContent>
+        </Dialog>
         </div>
         <div className="grid grid-cols-1 whitespace-nowrap overflow-x-auto border rounded-md mt-6">
           <table className="w-full text-sm text-left bg-white">
@@ -288,7 +443,7 @@ const ManageNews = () => {
                   >
                     {row.status === "1" ? "Inactive" : "Active"}
                   </td>
-                  <td className="text-start py-4 ps-6 flex items-center gap-4">
+                  <td className="text-start py-4 ps-6 pr-6 md:pr-0 flex items-center gap-4">
                     <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
                       <DialogTrigger asChild>
                         <div className="cursor-pointer" onClick={() => handleEditClick(row)}>
@@ -345,26 +500,6 @@ const ManageNews = () => {
                             </span>
                           </div>
 
-                          <div className="grid w-full items-center gap-2">
-                            <Label htmlFor="update-upload_image">Upload Image</Label>
-                            <Input
-                              type="file"
-                              id="update-upload_image"
-                              accept=".jpg,.jpeg,.png,.gif"
-                              name="upload_image"
-                              onChange={(event) => {
-                                updatePostForm.setFieldValue("upload_image", event.currentTarget.files[0]);
-                              }}
-                              onBlur={updatePostForm.handleBlur}
-                            />
-                            <span className="text-red-500 text-xs">
-                              {updatePostForm.touched.upload_image &&
-                              updatePostForm.errors.upload_image
-                                ? updatePostForm.errors.upload_image
-                                : null}
-                            </span>
-                          </div>
-
                           <Button
                             role={"submit"}
                             buttonText={"Update blog post"}
@@ -375,6 +510,17 @@ const ManageNews = () => {
                         </form>
                       </DialogContent>
                     </Dialog>
+                    <span
+                      className="cursor-pointer text-muted-foreground hover:text-brandLightBlue transition-colors"
+                      onClick={() => {
+                        setSelectedPost(row);
+                        updateImageForm.setFieldValue("id", row.id);
+                        updateImageForm.setFieldValue("upload_image", null);
+                        setIsImageDialogOpen(true);
+                      }}
+                    >
+                      <Image className="size-5" />
+                    </span>
                     <span onClick={() => handleToggleStatus(row.id, row.status)} className="cursor-pointer">
                       { row.status === "1" ?
                       <ToggleLeft className="text-muted-foreground" />:

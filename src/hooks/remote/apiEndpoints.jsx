@@ -127,6 +127,15 @@ export class apiEndPoints {
     }
   }
 
+  static async updateBlogPostImage(data) {
+    try {
+      return apiClient.post("/update_news_event_image", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
   static async singleBlogPost(blogID) {
     try {
       return formDataApiClient.get(`/get_news_event?id=${blogID}`);
@@ -136,9 +145,54 @@ export class apiEndPoints {
     }
   }
 
+  static async togglePostStatus(postID, status) {
+    try {
+      return apiClient.post(`/toggle_news_event_status?id=${postID}&status=${status}`);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
   static async listStaff(data) {
     try {
       return formDataApiClient.get("/get_our_staffs", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async createStaff(data) {
+    try {
+      return apiClient.post("/create_our_staff", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async updateStaff(data) {
+    try {
+      return apiClient.post("/update_our_staff", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async updateStaffImage(data) {
+    try {
+      return apiClient.post("/update_our_staff_image", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async toggleStaffStatus(staffID, status) {
+    try {
+      return formDataApiClient.post(`/toggle_our_staff_status?id=${staffID}&status=${status}`);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
