@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../components/ui/dialog";
-import { Edit } from "lucide-react";
+import { Eye } from "lucide-react";
 
 const AdmissionRequests = () => {
     const { requests = [] } = useAdmissionRequestList();
@@ -83,7 +83,7 @@ const AdmissionRequests = () => {
                   <td className={`text-start py-4 ps-6 ${row.status === "0" ? "text-emerald-500" : "text-red-500"}`}> {row.status === "0" ? "Reviewed" : "Pending"}</td>
                   <td className="text-start py-4 ps-6">
                     <div className="cursor-pointer" onClick={() => handleEditClick(row)}>
-                      <Edit className="size-5"/>
+                      <Eye className="size-5"/>
                     </div>
                   </td>
                 </tr>

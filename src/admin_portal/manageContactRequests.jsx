@@ -11,9 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../components/ui/dialog";
-import { Edit } from "lucide-react";
+import { Edit, Info } from "lucide-react";
+import Button from "../components/button";
 
 const ContactRequests = () => {
+  const loading = useSelector((state) => state.user.loading);
     const { requests = [] } = useContactUsRequestList();
     console.log(requests);
 
@@ -30,8 +32,8 @@ const ContactRequests = () => {
           setSelectedRequest(null);
         };
 
-    return ( 
-        <div>
+    return (
+      <div>
         <Spinner loading={useSelector((state) => state.user).loading} />
         <GoBack />
         <div>
@@ -66,17 +68,32 @@ const ContactRequests = () => {
             </thead>
             <tbody>
               {requests.map((row, index) => (
-                <tr key={row.id || index} className="hover:bg-[#c4c4c416] transition duration-500 relative" >
-                  <td className="text-start py-4 ps-6 pe-2 sticky left-0 bg-white z-10"> {index + 1}. </td>
+                <tr
+                  key={row.id || index}
+                  className="hover:bg-[#c4c4c416] transition duration-500 relative"
+                >
+                  <td className="text-start py-4 ps-6 pe-2 sticky left-0 bg-white z-10">
+                    {" "}
+                    {index + 1}.{" "}
+                  </td>
                   <td className="text-start py-4 pe-6 ps-1 max-w-60 md:max-w-80 truncate">
                     {row.firstname} {row.lastname}
                   </td>
                   <td className="text-start py-4 ps-6"> {row.phonenumber}</td>
-                  <td className="text-start py-4 ps-6 capitalize"> {row.email}</td>
-                  <td className="text-start py-4 ps-6 capitalize truncate max-w-[300px]"> {row.subject}</td>
+                  <td className="text-start py-4 ps-6 capitalize">
+                    {" "}
+                    {row.email}
+                  </td>
+                  <td className="text-start py-4 ps-6 capitalize truncate max-w-[300px]">
+                    {" "}
+                    {row.subject}
+                  </td>
                   <td className="text-start py-4 ps-6">
-                    <div className="cursor-pointer" onClick={() => handleEditClick(row)}>
-                      <Edit className="size-5"/>
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => handleEditClick(row)}
+                    >
+                      <Edit className="size-5" />
                     </div>
                   </td>
                 </tr>
@@ -97,25 +114,47 @@ const ContactRequests = () => {
             {selectedRequest && (
               <div className="grid gap-4 mt-4">
                 <div className="grid">
-                  <span className="font-semibold text-xs text-muted-foreground">Request ID:</span>
-                  <span className="text-sm">{formatDateTime(selectedRequest.inserted_dt)}</span>
+                  <span className="font-semibold text-xs text-muted-foreground">
+                    Request date:
+                  </span>
+                  <span className="text-sm">
+                    {formatDateTime(selectedRequest.inserted_dt)}
+                  </span>
                 </div>
-                
+
                 <div className="grid">
-                  <span className="font-semibold text-xs text-muted-foreground">Subject:</span>
+                  <span className="font-semibold text-xs text-muted-foreground">
+                    Subject:
+                  </span>
                   <span className="text-sm">{selectedRequest.subject}</span>
                 </div>
 
                 <div className="grid">
-                  <span className="font-semibold text-xs text-muted-foreground">Message:</span>
+                  <span className="font-semibold text-xs text-muted-foreground">
+                    Message:
+                  </span>
                   <span className="text-sm">{selectedRequest.message}</span>
+                </div>
+
+                <div className="mt-5">
+                  {selectedRequest.read_status === "1" ? (
+                    <Button
+                      role={"submit"}
+                      textColor={"text-white"}
+                      background={"bg-brandLightBlue"}
+                      buttonText={"Mark as read/treated"}
+                      loading={loading}
+                    />
+                  ) : (
+                    <div className="text-sm text-gray-400 flex items-center gap-2"><Info className="size-5" /><span>This request has been read and treated.</span></div>
+                  )}
                 </div>
               </div>
             )}
           </DialogContent>
         </Dialog>
       </div>
-     );
+    );
 }
  
 export default ContactRequests;

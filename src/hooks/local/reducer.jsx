@@ -91,6 +91,15 @@ export const CreateContactUsRequest = createAsyncThunk(
   }
 )
 
+export const UpdateContactUsRequest = createAsyncThunk(
+  "user/UpdateContactUsRequest",
+  async(data) => {
+      const updateContactEndPoint = await apiEndPoints.updateContactUsRequest(data);
+      const response = await updateContactEndPoint.data;
+      return response;
+  }
+)
+
 export const BlogList = createAsyncThunk(
   "user/blogPostList",
   async() => {
@@ -261,6 +270,7 @@ const slice = createSlice ({
           CreateAdmission.fulfilled,
           SingleAdmissionDetails.fulfilled,
           CreateContactUsRequest.fulfilled,
+          UpdateContactUsRequest.fulfilled,
           UpdateBlog.fulfilled, 
           UpdateBlogImage.fulfilled, 
           CreateBlog.fulfilled,
@@ -274,12 +284,15 @@ const slice = createSlice ({
         ),
         (state, action) => {
           state.loading = false;
-          if (action.payload.status_code === "0") {
-            state.users = action.payload;
-            showSuccessToast(action.payload.message)
+          const response = Array.isArray(action.payload)
+            ? action.payload[0]
+            : action.payload;
+          if (response?.status_code === "0") {
+            state.users = response;
+            showSuccessToast(response?.message)
           } else {
-            state.error = action.payload.message;
-            showErrorToast(action.payload.message);
+            state.error = response?.message || "An error occurred";
+            showErrorToast(response?.message || "An error occurred");
           }
         }
       )
@@ -294,6 +307,7 @@ const slice = createSlice ({
           SingleAdmissionDetails.pending,
           ContactUsRequestList.pending,
           CreateContactUsRequest.pending,
+          UpdateContactUsRequest.pending,
           BlogList.pending,
           BlogDetail.pending,
           StaffList.pending,
@@ -326,6 +340,7 @@ const slice = createSlice ({
           SingleAdmissionDetails.rejected,
           ContactUsRequestList.rejected,
           CreateContactUsRequest.rejected,
+          UpdateContactUsRequest.rejected,
           BlogList.rejected,
           BlogDetail.rejected,
           StaffList.rejected,

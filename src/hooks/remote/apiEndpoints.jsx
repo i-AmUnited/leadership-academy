@@ -57,7 +57,7 @@ export class apiEndPoints {
 
   static async createAdmissionRequest(data) {
     try {
-      return apiClient.post("/create_save_admission_request", data);
+      return formDataApiClient.post("/save_admission_request", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -93,7 +93,16 @@ export class apiEndPoints {
 
   static async createContactUsRequest(data) {
     try {
-      return apiClient.post("/create_contact_us_request", data);
+      return formDataApiClient.post("/save_contact_us_request", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async updateContactUsRequest(data) {
+    try {
+      return formDataApiClient.post("/update_contact_us_request", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;

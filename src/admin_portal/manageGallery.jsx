@@ -77,7 +77,8 @@ const ManageGallery = () => {
       const { upload_image, list_id } = values;
       let createGalleryData = { upload_image, list_id };
       const { payload } = await dispatch(CreateGallery(createGalleryData));
-      if (payload.status_code === "0") {
+
+      if (payload[0].status_code === "0") {
         showSuccessToast("Gallery created");
         resetForm();
         setIsDialogOpen(false);
