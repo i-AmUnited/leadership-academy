@@ -6,6 +6,7 @@ import AdmissionRequests from "./manageAdmissionRequests";
 import ContactRequests from "./manageContactRequests";
 import ManageNews from "./manageNews";
 import ManageStaff from "./manageStaff";
+import ManageGallery from "./manageGallery";
 
 const Admin = () => {
     return ( 
@@ -18,6 +19,7 @@ const Admin = () => {
           <Route path="manage-contact-us-requests" element={<ContactRequests />} />
           <Route path="manage-blog-posts" element={<ManageNews />} />
           <Route path="manage-staff" element={<ManageStaff />} />
+          <Route path="manage-gallery" element={<ManageGallery />} />
         </Routes>
         </div>
      );

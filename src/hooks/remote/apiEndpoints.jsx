@@ -165,7 +165,7 @@ export class apiEndPoints {
 
   static async createStaff(data) {
     try {
-      return apiClient.post("/create_our_staff", data);
+      return formDataApiClient.post("/create_our_staff", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -174,7 +174,7 @@ export class apiEndPoints {
 
   static async updateStaff(data) {
     try {
-      return apiClient.post("/update_our_staff", data);
+      return formDataApiClient.post("/update_our_staff", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -183,7 +183,7 @@ export class apiEndPoints {
 
   static async updateStaffImage(data) {
     try {
-      return apiClient.post("/update_our_staff_image", data);
+      return formDataApiClient.post("/update_our_staff_image", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -192,7 +192,7 @@ export class apiEndPoints {
 
   static async toggleStaffStatus(staffID, status) {
     try {
-      return formDataApiClient.post(`/toggle_our_staff_status?id=${staffID}&status=${status}`);
+      return apiClient.post(`/toggle_our_staff_status?id=${staffID}&status=${status}`);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -202,6 +202,24 @@ export class apiEndPoints {
   static async listGallery(data) {
     try {
       return formDataApiClient.get("/get_galleries", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async createGallery(data) {
+    try {
+      return formDataApiClient.post("/create_gallery", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
+
+  static async updateGallery(data) {
+    try {
+      return formDataApiClient.post("/update_gallery_image", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;

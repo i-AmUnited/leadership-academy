@@ -38,7 +38,9 @@ function Navbar() {
 
   return (
     <div className="bg-brandBlue px-4 md:px-[120px] py-5 flex justify-between items-center sticky top-0 z-50">
-      <img src={logo} alt="" className="h-9" />
+      <Link to={"/"} className={navLinkClass('/')}>
+          <img src={logo} alt="" className="h-9" />
+      </Link>
       
       {/* Desktop Navigation */}
       <div className="text-white text-sm hidden lg:flex gap-10">

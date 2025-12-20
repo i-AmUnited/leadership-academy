@@ -199,6 +199,25 @@ export const GalleryList = createAsyncThunk(
   }
 )
 
+export const CreateGallery = createAsyncThunk(
+  "user/createGallery",
+  async(data) => {
+      const createGalleryEndPoint = await apiEndPoints.createGallery(data);
+      const response = await createGalleryEndPoint.data;
+      return response;
+  }
+)
+
+export const UpdateGallery = createAsyncThunk(
+  "user/updateGallery",
+  async(data) => {
+      const updateGalleryEndPoint = await apiEndPoints.updateGallery(data);
+      const response = await updateGalleryEndPoint.data;
+      return response;
+  }
+)
+
+
 const slice = createSlice ({
   name: "user",
   initialState : initialState,
@@ -249,7 +268,9 @@ const slice = createSlice ({
           CreateStaff.fulfilled,
           UpdateStaff.fulfilled,
           UpdateStaffImage.fulfilled,
-          ToggleStaff.fulfilled
+          ToggleStaff.fulfilled,
+          CreateGallery.fulfilled,
+          UpdateGallery.fulfilled
         ),
         (state, action) => {
           state.loading = false;
@@ -284,7 +305,9 @@ const slice = createSlice ({
           UpdateBlog.pending,
           UpdateBlogImage.pending, 
           CreateBlog.pending,
-          ToggleBlog.pending
+          ToggleBlog.pending,
+          CreateGallery.pending,
+          UpdateGallery.pending
         ),
         (state) => {
           state.loading = true;
@@ -314,7 +337,9 @@ const slice = createSlice ({
           UpdateBlog.rejected,
           UpdateBlogImage.rejected, 
           CreateBlog.rejected,
-          ToggleBlog.rejected
+          ToggleBlog.rejected,
+          CreateGallery.rejected,
+          UpdateGallery.rejected
         ),
         (state, action) => {
           state.loading = false;
