@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { showErrorToast, showSuccessToast, } from "../constants";
-import {apiEndPoints} from '../remote/apiEndPoints';
+import {apiEndPoints} from '../remote/apiEndpoints';
 
 const initialState = {
     users: null,
