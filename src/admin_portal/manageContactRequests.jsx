@@ -1,7 +1,7 @@
 import { useContactUsRequestList } from "../lib/reuseableEffects";
 import Spinner from "../components/Spinners/spinner";
 import GoBack from "../components/back";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { formatDateTime } from "../lib/utils";
 import { useState } from "react";
 import {
@@ -13,11 +13,15 @@ import {
 } from "../components/ui/dialog";
 import { Edit, Info } from "lucide-react";
 import Button from "../components/button";
+import { showSuccessToast } from "../hooks/constants";
+import { UpdateContactUsRequest } from "../hooks/local/reducer";
 
 const ContactRequests = () => {
   const loading = useSelector((state) => state.user.loading);
-    const { requests = [] } = useContactUsRequestList();
-    console.log(requests);
+    const { requests = [], refetch } = useContactUsRequestList();
+    // console.log(requests);
+
+    const dispatch = useDispatch();
 
     const [selectedRequest, setSelectedRequest] = useState(null);
         const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -62,6 +66,9 @@ const ContactRequests = () => {
                   Subject
                 </th>
                 <th scope="col" className="px-6 py-[18px] whitespace-nowrap">
+                  Status
+                </th>
+                <th scope="col" className="px-6 py-[18px] whitespace-nowrap">
                   Actions
                 </th>
               </tr>
@@ -79,14 +86,19 @@ const ContactRequests = () => {
                   <td className="text-start py-4 pe-6 ps-1 max-w-60 md:max-w-80 truncate">
                     {row.firstname} {row.lastname}
                   </td>
-                  <td className="text-start py-4 ps-6"> {row.phonenumber}</td>
+                  <td className="text-start py-4 ps-6">{row.phonenumber}</td>
                   <td className="text-start py-4 ps-6 capitalize">
                     {" "}
                     {row.email}
                   </td>
-                  <td className="text-start py-4 ps-6 capitalize truncate max-w-[300px]">
+                  <td className="text-start py-4 ps-6 capitalize truncate max-w-[250px]">
                     {" "}
                     {row.subject}
+                  </td>
+                  <td className="text-start py-4 ps-6">
+                    {row.read_status === "1" ? 
+                      <span className="text-red-500">Untreated</span> : <span className="font-bold text-emerald-500">Treated</span>
+                    }
                   </td>
                   <td className="text-start py-4 ps-6">
                     <div
@@ -107,7 +119,7 @@ const ContactRequests = () => {
           <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-sm font-bold text-start">
-                Admission Request Details
+                Request Details
               </DialogTitle>
             </DialogHeader>
 
@@ -138,15 +150,35 @@ const ContactRequests = () => {
 
                 <div className="mt-5">
                   {selectedRequest.read_status === "1" ? (
-                    <Button
-                      role={"submit"}
-                      textColor={"text-white"}
-                      background={"bg-brandLightBlue"}
-                      buttonText={"Mark as read/treated"}
-                      loading={loading}
-                    />
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        const { payload } = await dispatch(
+                          UpdateContactUsRequest({
+                            id: selectedRequest.id,
+                            status: "0",
+                          })
+                        );
+                        if (payload.status_code === "0") {
+                          showSuccessToast("Request marked as treated!");
+                          setIsDialogOpen(false);
+                          refetch();
+                        }
+                      }}
+                    >
+                      <Button
+                        role={"submit"}
+                        textColor={"text-white"}
+                        background={"bg-brandLightBlue"}
+                        buttonText={"Mark as read/treated"}
+                        loading={loading}
+                      />
+                    </form>
                   ) : (
-                    <div className="text-sm text-gray-400 flex items-center gap-2"><Info className="size-5" /><span>This request has been read and treated.</span></div>
+                    <div className="text-sm text-gray-400 flex items-center gap-2">
+                      <Info className="size-5" />
+                      <span>This request has been read and treated.</span>
+                    </div>
                   )}
                 </div>
               </div>

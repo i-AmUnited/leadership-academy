@@ -154,9 +154,9 @@ export class apiEndPoints {
     }
   }
 
-  static async togglePostStatus(postID, status) {
+  static async togglePostStatus(data) {
     try {
-      return apiClient.post(`/toggle_news_event_status?id=${postID}&status=${status}`);
+      return apiClient.post("/toggle_news_event_status", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -199,9 +199,9 @@ export class apiEndPoints {
     }
   }
 
-  static async toggleStaffStatus(staffID, status) {
+  static async toggleStaffStatus(data) {
     try {
-      return apiClient.post(`/toggle_our_staff_status?id=${staffID}&status=${status}`);
+      return apiClient.post("/toggle_our_staff_status", data);
     } catch (error) {
       apiEndPoints.extractError(error);
       throw error;
@@ -235,4 +235,12 @@ export class apiEndPoints {
     }
   }
 
+  static async toggleGalleryStatus(data) {
+    try {
+      return apiClient.post("/toggle_gallery_status", data);
+    } catch (error) {
+      apiEndPoints.extractError(error);
+      throw error;
+    }
+  }
 }

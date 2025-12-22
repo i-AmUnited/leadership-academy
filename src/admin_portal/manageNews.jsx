@@ -206,7 +206,7 @@ const ManageNews = () => {
 
       const { payload } = await dispatch(
         ToggleBlog({
-          postID: postId,
+          id: postId,
           status: newStatus,
         })
       );

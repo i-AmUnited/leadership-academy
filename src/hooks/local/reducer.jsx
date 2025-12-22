@@ -138,8 +138,8 @@ export const UpdateBlogImage = createAsyncThunk(
 
 export const ToggleBlog = createAsyncThunk(
   "user/toggleBlog",
-  async ({ postID, status }) => {
-    const toggleBlogEndPoint = await apiEndPoints.togglePostStatus(postID, status);
+  async (data) => {
+    const toggleBlogEndPoint = await apiEndPoints.togglePostStatus(data);
     const response = await toggleBlogEndPoint.data;
     return response;
   }
@@ -192,8 +192,8 @@ export const UpdateStaffImage = createAsyncThunk(
 
 export const ToggleStaff = createAsyncThunk(
   "user/toggleStaff",
-  async ({ staffID, status }) => {
-    const toggleStaffEndPoint = await apiEndPoints.toggleStaffStatus(staffID, status);
+  async (data) => {
+    const toggleStaffEndPoint = await apiEndPoints.toggleStaffStatus(data);
     const response = await toggleStaffEndPoint.data;
     return response;
   }
@@ -225,6 +225,15 @@ export const UpdateGallery = createAsyncThunk(
       return response;
   }
 )
+
+export const ToggleGallery = createAsyncThunk(
+  "user/toggleGallery",
+  async (data) => {
+    const toggleGalleryEndPoint = await apiEndPoints.toggleGalleryStatus(data);
+    const response = await toggleGalleryEndPoint.data;
+    return response;
+  }
+);
 
 
 const slice = createSlice ({
@@ -280,7 +289,8 @@ const slice = createSlice ({
           UpdateStaffImage.fulfilled,
           ToggleStaff.fulfilled,
           CreateGallery.fulfilled,
-          UpdateGallery.fulfilled
+          UpdateGallery.fulfilled,
+          ToggleGallery.fulfilled
         ),
         (state, action) => {
           state.loading = false;
@@ -321,7 +331,8 @@ const slice = createSlice ({
           CreateBlog.pending,
           ToggleBlog.pending,
           CreateGallery.pending,
-          UpdateGallery.pending
+          UpdateGallery.pending,
+          ToggleGallery.pending
         ),
         (state) => {
           state.loading = true;
@@ -354,7 +365,8 @@ const slice = createSlice ({
           CreateBlog.rejected,
           ToggleBlog.rejected,
           CreateGallery.rejected,
-          UpdateGallery.rejected
+          UpdateGallery.rejected,
+          ToggleGallery.rejected
         ),
         (state, action) => {
           state.loading = false;

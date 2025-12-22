@@ -190,9 +190,9 @@ const ManageStaff = () => {
       validationSchema: Yup.object({
         name: Yup.string().required("Please provide staff name"),
         post: Yup.string().required("Please provide staff role"),
-        list_id: Yup.string()
-          .matches(/^\d{4}$/, "List ID must be a 4-digit number")
-          .required("Please provide list id"),
+        // list_id: Yup.string()
+        //   .matches(/^\d{4}$/, "List ID must be a 4-digit number")
+        //   .required("Please provide list id"),
       }),
       onSubmit: async (values, { resetForm }) => {
         const { id, name, post, list_id } = values;
@@ -229,7 +229,7 @@ const ManageStaff = () => {
 
       const { payload } = await dispatch(
         ToggleStaff({
-          staffID: staffId,
+          id: staffId,
           status: newStatus,
         })
       );

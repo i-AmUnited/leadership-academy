@@ -17,10 +17,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
   CreateGallery,
-  ToggleAchievement,
-  UpdateGallery,
+  ToggleGallery,
 } from "../hooks/local/reducer";
-import { showSuccessToast } from "../hooks/constants";
+import { showErrorToast, showSuccessToast } from "../hooks/constants";
 import Spinner from "../components/Spinners/spinner";
 import { useState } from "react";
 
@@ -47,8 +46,27 @@ const ManageGallery = () => {
 
   const dispatch = useDispatch();
 
+  const handleToggleStatus = async (galleryId, currentStatus) => {
+    const newStatus = currentStatus === "1" ? "0" : "1";
+
+    const { payload } = await dispatch(
+      ToggleGallery({
+        id: galleryId,
+        status: newStatus,
+      })
+    );
+
+    if (payload?.status_code === "0") {
+      showSuccessToast(
+        `Image ${newStatus === "0" ? "activated" : "deactivated"}`
+      );
+      refetch();
+      return;
+    }
+    showErrorToast(payload?.message || "Unable to toggle image status");
+  };
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-//   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
 
   const createGalleryForm = useFormik({
     initialValues: {
@@ -216,7 +234,18 @@ const ManageGallery = () => {
                   {row.status === "1" ? "Inactive" : "Active"}
                 </td>
                 <td className="text-start py-4 ps-6 flex items-center gap-4 pt-12">
-                  edit and toggle status
+                  <button
+                      type="button"
+                      aria-label={`Toggle status for ${row.name || "gallery"}`}
+                      onClick={() => handleToggleStatus(row.id, row.status)}
+                      className="cursor-pointer"
+                    >
+                      {row.status === "1" ? (
+                        <ToggleLeft className="text-muted-foreground" />
+                      ) : (
+                        <ToggleRight className="text-emerald-500" />
+                      )}
+                    </button>
                 </td>
               </tr>
             ))}
