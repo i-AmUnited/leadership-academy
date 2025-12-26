@@ -19,6 +19,8 @@ const AdmissionRequests = () => {
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    // console.log(requests);
+
     const handleEditClick = (request) => {
       setSelectedRequest(request);
       setIsDialogOpen(true);

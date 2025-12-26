@@ -23,6 +23,7 @@ const BlogList = () => {
 
   const { posts } = useBlogList();
   // console.log(posts)
+  const activePosts = posts?.filter(posts => posts.status === "0") || [];
 
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 6
@@ -90,17 +91,17 @@ const BlogList = () => {
   // Filter blog posts
   // Ensures filters recompute when posts change and guards against malformed data
   const filteredPosts = useMemo(() => {
-    if (!Array.isArray(posts)) return []
-    return posts.filter(post => {
-      const categoryKey = (post?.category || '').toLowerCase()
-      const topicKey = (post?.topic || '').toLowerCase()
+    if (!Array.isArray(activePosts)) return []
+    return activePosts.filter(activePosts => {
+      const categoryKey = (activePosts?.category || '').toLowerCase()
+      const topicKey = (activePosts?.topic || '').toLowerCase()
 
       const contentMatch = contentFilters.all || !!contentFilters[categoryKey]
       const topicMatch = topicFilters.all || !!topicFilters[topicKey]
 
       let dateMatch = dateFilters.all
       if (!dateMatch) {
-        const year = Number(post?.year)
+        const year = Number(activePosts?.year)
         if (dateFilters.twentyFour) dateMatch = dateMatch || year === 2024
         if (dateFilters.twentyThree) dateMatch = dateMatch || year === 2023
         if (dateFilters.older) dateMatch = dateMatch || year < 2023
@@ -109,13 +110,13 @@ const BlogList = () => {
 
       return contentMatch && topicMatch && dateMatch
     })
-  }, [posts, contentFilters, topicFilters, dateFilters])
+  }, [activePosts, contentFilters, topicFilters, dateFilters])
 
   // Reset to first page whenever new posts arrive to ensure immediate rendering
   // of the first page after data fetch and on filter reset
   useEffect(() => {
     setCurrentPage(1)
-  }, [posts])
+  }, [activePosts])
 
 
   // Pagination logic

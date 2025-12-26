@@ -4,52 +4,10 @@ import Spinner from "../../components/Spinners/spinner";
 
 const Staff = () => {
   const {staff} = useStaffList();
+  const activeStaff = staff?.filter(staff => staff.status === "0") || [];
 
   const tlaoURL = "http://tlao.ristherhen.com/tlao_api/"
 
-
-    // const staff = [
-    //           {
-    //             role: "Proprietor",
-    //             name: "Oluwole Arobieke",
-    //             profile: staff_1,
-    //           },
-    //           {
-    //             role: "Principal",
-    //             name: "Dr Akpan N I ",
-    //             profile: staff_2,
-    //           },
-    //           {
-    //             role: "Vice Principal Senior Section",
-    //             name: "Mr Ijalana Tosin",
-    //             profile: staff_3,
-    //           },
-    //           {
-    //             role: "Vice Principal Junior Section",
-    //             name: "Mr Owolabi Babatunde",
-    //             profile: staff_4,
-    //           },
-    //           {
-    //             role: "Physical Education Instructor",
-    //             name: "Nneka Iyamu",
-    //             profile: staff_5,
-    //           },
-    //           {
-    //             role: "School Nurse",
-    //             name: "Efe Ighodaro",
-    //             profile: staff_6,
-    //           },
-    //           {
-    //             role: "Hostel Manager",
-    //             name: "Oluwatobi Adeyemi",
-    //             profile: staff_7,
-    //           },
-    //           {
-    //             role: "Speech-Language Pathologist",
-    //             name: "Emeka Omoregie",
-    //             profile: staff_8,
-    //           },
-    //     ]
     return ( 
          <div className="px-4 md:px-[120px] lg:px-[231px] py-20 grid gap-10 bg-[#fafafa]">
             <Spinner loading={useSelector((state) => state.user).loading} />
@@ -68,7 +26,7 @@ const Staff = () => {
             </div>
             </div>
             <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-            {staff.map((item, index) => (
+            {activeStaff.map((item, index) => (
               <div key={index}>
                 <img
                   src={`${tlaoURL}${item.image_url}`}

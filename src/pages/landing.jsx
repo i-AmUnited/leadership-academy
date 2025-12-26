@@ -15,11 +15,13 @@ import meals from "../assets/logo and icons/meal.png";
 import nextStep from "../assets/images/next step.png";
 import { Link } from "react-router-dom";
 import img1 from "../assets/images/Rectangle 11.png";
-import img2 from "../assets/images/Rectangle 12.png";
-import img3 from "../assets/images/Rectangle 13.png";
 import nextArrow from "../assets/logo and icons/arrow-right-circle.png";
+import { useSelector } from "react-redux";
+import { useBlogList } from "../lib/reuseableEffects";
+import Spinner from "../components/Spinners/spinner";
 
 const LandingPage = () => {
+
     const features = [
   {
     title: "Modern Classrooms",
@@ -84,23 +86,10 @@ const nextSteps = [
   },
 ];
 
-const blogPosts = [
-  {
-    title: "Nurturing Tomorrow’s Leaders Today",
-    label: "We instil values of leadership, responsibility, and creativity that prepare students to make a positive impact in the world.",
-    poster: img1,
-  },
-  {
-    title: "Building a Strong Academic Foundation",
-    label: "From early years to advanced levels, our curriculum is designed to foster critical thinking, problem-solving, and a lifelong love of learning.",
-    poster: img2,
-  },
-  {
-    title: "Where Learning Meets Creativity",
-    label: "We encourage students to explore their talents in arts, sports, and technology, ensuring a well-rounded education.",
-    poster: img3,
-  },
-];
+const { posts } = useBlogList();
+const recommendedPosts = posts.slice(0, 3);
+
+const tlaoURL = "http://tlao.ristherhen.com/tlao_api/";
 
 const testimonials = [
   {
@@ -132,6 +121,8 @@ const testimonials = [
 
     return (
       <div className="grid gap-20">
+        <Spinner loading={useSelector((state) => state.user).loading} />
+          
         {/* Hero section */}
         <div className="relative">
           <img
@@ -334,21 +325,21 @@ const testimonials = [
             </div>
           </div>
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-            {blogPosts.map((item, index) => (
+            {recommendedPosts.map((item, index) => (
               <div key={index} className="grid gap-4">
                 <img
-                  src={item.poster}
+                  src={`${tlaoURL}${item.image_url}`}
                   alt={item.title}
-                  className="aspect-video w-full"
+                  className="aspect-video w-full object-cover border"
                 />
                 <div>
                   <div className="font-semibold text-sm text-brandBlue">
                     {item.title}
                   </div>
                   <p className="text-brandLightBlack text-sm mt-2 mb-4 line-clamp-1">
-                    {item.label}
+                    {item.body}
                   </p>
-                  <Link to={"/"} className="flex items-center gap-2">
+                  <Link to={`/blog/${btoa(item.id)}`} className="flex items-center gap-2">
                     <span className="text-sm font-semibold text-brandLightBlue">
                       Read more
                     </span>{" "}

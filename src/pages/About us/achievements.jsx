@@ -3,25 +3,9 @@ import achievementIcon from "../../assets/logo and icons/achievement.png"
 import { useSelector } from "react-redux";
 import Spinner from "../../components/Spinners/spinner";
 const Achievements = () => {
-    // const achievement = [
-    //       {
-    //         year: "2024",
-    //         achievement: "1st position Spelling Bee – Ondo State Education Awards",
-    //         icon: achievementIcon,
-    //       },
-    //       {
-    //         year: "2024",
-    //         achievement: "8th position in the Nation Spelling Bee",
-    //         icon: achievementIcon,
-    //       },
-    //       {
-    //         year: "2024",
-    //         achievement: "3rd best mathematics – Ondo State Education Awards",
-    //         icon: achievementIcon,
-    //       },
-    // ]
+  
     const { achievements } = useAchievements();
-    //  console.log(achievements)
+    const activeAchievements = achievements?.filter(achievement => achievement.status === "0") || [];
     return ( 
         <div className="px-4 md:px-[120px] lg:px-[231px] py-20 grid gap-10 bg-[#fafafa]">
           
@@ -38,7 +22,7 @@ const Achievements = () => {
             </div>
             </div>
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-            {achievements.map((item, index) => (
+            {activeAchievements.map((item, index) => (
               <div key={index} className="bg-white p-6 border-b-2 border-brandRed">
                 <img
                   src={achievementIcon}
